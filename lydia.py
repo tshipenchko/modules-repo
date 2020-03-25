@@ -43,6 +43,7 @@ class LydiaMod(loader.Module):
         self.name = _("Lydia anti-PM")
         self._ratelimit = []
         self._cleanup = None
+        self._lydia = None
 
     async def client_ready(self, client, db):
         self._db = db
