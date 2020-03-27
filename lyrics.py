@@ -26,12 +26,17 @@ def register(cb):
     cb(LyricsMod())
 
 
+@loader.tds
 class LyricsMod(loader.Module):
     """Sings songs"""
+    strings = {"name": "Lyrics",
+               "genius_api_token_doc": "The LyricsGenius API token from http://genius.com/api-clients",
+               "invalid_syntax": "<code>Please specify song and artist.</code>",
+               "song_not_found": "<code>Song not found.</code>"}
+
     def __init__(self):
-        self.config = loader.ModuleConfig("GENIUS_API_TOKEN", "",
-                                          "The LyricsGenius API token from http://genius.com/api-clients")
-        self.name = _("Lyrics")
+        self.config = loader.ModuleConfig("GENIUS_API_TOKEN", None, lambda: self.strings["genius_api_token_doc"])
+        self.name = self.strings["name"]
 
     def config_complete(self):
         self.genius = lyricsgenius.Genius(self.config["GENIUS_API_TOKEN"])
@@ -41,7 +46,7 @@ class LyricsMod(loader.Module):
         args = utils.get_args_split_by(message, ",")
         if len(args) != 2:
             logger.debug(args)
-            await message.edit(_("<code>Please specify song and artist.</code>"))
+            await utils.answer(message, self.strings["invalid_syntax"])
             return
         logger.debug("getting song lyrics for " + args[0] + ", " + args[1])
         try:
@@ -50,7 +55,7 @@ class LyricsMod(loader.Module):
             # Song not found causes internal library error
             song = None
         if song is None:
-            await message.edit(_("<code>Song not found.</code>"))
+            await utils.answer(message, self.strings["song_not_found"])
             return
         logger.debug(song)
         logger.debug(song.lyrics)
