@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .. import loader
+from .. import loader, utils
 import random
 
 
@@ -33,11 +33,14 @@ RANDOM_WORDS = {"sur": 6, "Sir": 6, "bro": 6, "yes": 5, "no": 5, "bolte": 2, "bo
 WORDS_WEIGHTED = [word for word, count in RANDOM_WORDS.items() for i in range(count)]
 
 
+@loader.tds
 class XDAMod(loader.Module):
     """Gibes bholte bro"""
+    strings = {"name": "XDA"}
+
     def __init__(self):
         self.config = loader.ModuleConfig("XDA_RANDOM_WORDS", RANDOM_WORDS, "Random words from XDA as dict & weight")
-        self.name = "XDA"
+        self.name = self.strings["name"]
 
     async def xdacmd(self, message):
         """Send random XDA posts"""
@@ -49,4 +52,5 @@ class XDAMod(loader.Module):
         # string = random.choices(self.config["XDA_RANDOM_WORDS"], weights=self.config["XDA_WEIGHT_WORDS"], k=length)
 
         random.shuffle(string)
-        await message.edit(" ".join(string))
+        bholte = " ".join(string)
+        await utils.answer(message, bholte)
