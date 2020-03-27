@@ -26,28 +26,34 @@ def register(cb):
     cb(QuickTypeMod())
 
 
+@loader.tds
 class QuickTypeMod(loader.Module):
     """Deletes your message after a timeout"""
+    strings = {"name": "Quick Typer",
+               "need_something": "U wot? I need something to type",
+               "lazy_af": "Go type it urself m8",
+               "nice_number": "Nice number bro"}
+
     def __init__(self):
-        self.name = _("Quick Typer")
+        self.name = self.strings["name"]
 
     async def quicktypecmd(self, message):
         """.quicktype <timeout> <message>"""
         args = utils.get_args(message)
         logger.debug(args)
         if len(args) == 0:
-            await message.edit(_("U wot? I need something to type"))
+            await utils.answer(message, self.strings["need_something"])
             return
         if len(args) == 1:
-            await message.edit(_("Go type it urself m8"))
+            await utils.answer(message, self.strings["lazy_af"])
             return
         t = args[0]
         mess = " ".join(args[1:])
         try:
             t = float(t)
         except ValueError:
-            await message.edit(_("Nice number bro"))
+            await utils.answer(message, self.strings["nice_number"])
             return
-        await message.edit(mess)
+        await utils.answer(message, mess)
         await asyncio.sleep(t)
         await message.delete()
