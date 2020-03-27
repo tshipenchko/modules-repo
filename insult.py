@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .. import loader
+from .. import loader, utils
 
 import logging
 import random
@@ -27,10 +27,13 @@ def register(cb):
     cb(InsultMod())
 
 
+@loader.tds
 class InsultMod(loader.Module):
     """Shouts at people"""
+    strings = {"name": "Insulter"}
+
     def __init__(self):
-        self.name = _("Insulter")
+        self.name = self.strings["name"]
 
     async def insultcmd(self, message):
         """Use when angry"""
@@ -49,4 +52,4 @@ class InsultMod(loader.Module):
         end = random.choice(ends)
         insult = start + " " + adjective_start + " " + adjective_mid + (" " if adjective_mid else "") + noun + end
         logger.debug(insult)
-        await message.edit(insult)
+        await utils.answer(message, insult)
