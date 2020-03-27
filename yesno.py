@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .. import loader
+from .. import loader, utils
 import random
 
 
@@ -22,10 +22,13 @@ def register(cb):
     cb(YesNoMod())
 
 
+@loader.tds
 class YesNoMod(loader.Module):
     """Helps you make important life choices"""
+    strings = {"name": "YesNo"}
+
     def __init__(self):
-        self.name = _("YesNo")
+        self.name = self.strings["name"]
 
     async def yesnocmd(self, message):
         """Make a life choice"""
@@ -33,6 +36,7 @@ class YesNoMod(loader.Module):
         yes = ["Yes", "Yup", "Absolutely", "Non't"]
         no = ["No", "Nope", "Nah", "Yesn't"]
         if random.getrandbits(1):
-            await message.edit(random.choice(yes))
+            response = random.choice(yes)
         else:
-            await message.edit(random.choice(no))
+            response = random.choice(no)
+        await utils.answer(message, response)
