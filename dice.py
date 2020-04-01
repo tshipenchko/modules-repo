@@ -53,7 +53,6 @@ class DiceMod(loader.Module):
             count = int(args[1])
         except (ValueError, IndexError):
             count = 1
-        print(count)
         rolled = -1
         done = 0
         chat = message.to_id
