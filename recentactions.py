@@ -25,19 +25,26 @@ def register(cb):
     cb(RecentActionsMod())
 
 
+@loader.tds
 class RecentActionsMod(loader.Module):
     """Reads recent actions"""
+    strings = {"name": "Recent Actions",
+               "reply_start": "<code>Reply to a message to specify where to start</code>",
+               "invalid_chat": "<code>This isn't a supergroup or channel",
+               "needs_admin": "<code>Admin rights are required to read deleted messages</code>",
+               "recovered": "Deleted message {} recovered. Originally sent at {} by {}, deleted at {} by {}"}
+
     def __init__(self):
-        self.name = _("Recent Actions")
+        self.name = self.strings["name"]
 
     async def recoverdeletedcmd(self, message):
         """Restores deleted messages sent after replied message (optionally specify how many to recover)"""
         msgs = message.client.iter_admin_log(message.to_id, delete=True)
         if not message.is_reply:
-            await utils.answer(message, _("<code>Reply to a message to specify where to start</code>"))
+            await utils.answer(message, self.strings["reply_start"])
             return
         if not isinstance(message.to_id, telethon.tl.types.PeerChannel):
-            await utils.answer(message, _("<code>This isn't a supergroup or channel"))
+            await utils.answer(message, self.strings["invalid_chat"])
             return
         target = (await message.get_reply_message()).date
         ret = []
@@ -49,7 +56,7 @@ class RecentActionsMod(loader.Module):
                     continue
                 ret += [msg]
         except telethon.errors.rpcerrorlist.ChatAdminRequiredError:
-            await utils.answer(message, _("<code>Admin is required to read deleted messages</code>"))
+            await utils.answer(message, self.strings["needs_admin"])
         args = utils.get_args(message)
         if len(args) > 0:
             try:
@@ -61,8 +68,8 @@ class RecentActionsMod(loader.Module):
             orig = msg.original.action.message
             deldate = msg.original.date.isoformat()
             origdate = orig.date.isoformat()
-            await message.respond(_("Deleted message {} recovered. Originally sent at {} by {}, deleted at {} by {}")
-                                  .format(msg.id, origdate, orig.from_id, deldate, msg.user_id))
+            await message.respond(self.strings["recovered"].format(msg.id, origdate, orig.from_id,
+                                                                   deldate, msg.user_id))
             if isinstance(orig, telethon.tl.types.MessageService):
                 await message.respond("<code>" + utils.escape_html(orig.stringify()) + "</code>")
             else:
