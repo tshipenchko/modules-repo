@@ -35,11 +35,18 @@ def sgen(agen, loop):
             return
 
 
+@loader.tds
 class TransferShMod(loader.Module):
     """Upload to and from transfer.sh"""
+    strings = {"name": "transfer.sh support",
+               "up_cfg_doc": "URL to upload the file to.",
+               "file_plox": "<code>Provide a file to upload</code>",
+               "uploading": "<code>Uploading...</code>",
+               "uploaded": "<a href={}>Uploaded!</a>"}
+
     def __init__(self):
-        self.config = loader.ModuleConfig("UPLOAD_URL", "https://transfer.sh/{}", "Url to PUT to")
-        self.name = _("transfer.sh support")
+        self.config = loader.ModuleConfig("UPLOAD_URL", "https://transfer.sh/{}", lambda: self.strings["up_cfg_doc"])
+        self.name = self.strings["name"]
 
     async def uploadshcmd(self, message):
         """Uploads to transfer.sh"""
@@ -49,31 +56,14 @@ class TransferShMod(loader.Module):
             msg = (await message.get_reply_message())
         doc = msg.media
         if doc is None:
-            await message.edit(_("<code>Provide a file to upload</code>"))
+            await utils.answer(message, self.strings["file_plox"])
             return
         doc = message.client.iter_download(doc)
         logger.debug("begin transfer")
-        await message.edit(_("<code>Uploading...</code>"))
+        await utils.answer(message, self.strings["uploading"])
         r = await utils.run_sync(requests.put, self.config["UPLOAD_URL"].format(msg.file.name),
                                  data=sgen(doc, asyncio.get_event_loop()))
         logger.debug(r)
         r.raise_for_status()
         logger.debug(r.headers)
-        await message.edit(_("<a href={}>Uploaded!</a>").format(r.text))
-
-# This code doesn't work.
-#    async def downloadshcmd(self, message):
-#        """Downloads from transfer.sh"""
-#        args = utils.get_args(message)
-#        if len(args) < 1:
-#            await message.edit("<code>Provide a link to download</code>")
-#            return
-#        url = args[0]
-#        if url.startswith("http://"):
-#            url = message.message.replace("http://", "https://", 1)
-#        elif not url.startswith("https://"):
-#            url = "https://" + url
-#        if url.startswith("https://transfer.sh/"):
-#            url = url.replace("https://transfer.sh/", "https://transfer.sh/get/", 1)
-#        logger.error(url)
-#        await utils.answer(message, url, asfile=True)
+        await utils.answer(message, self.strings["uploaded"].format(r.text))
