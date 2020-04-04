@@ -17,7 +17,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# The API is not yet public. To get a key, go to https://t.me/Intellivoid then ask Qián Zhào.
+# requires: coffeehouse>=2.2.0
 
 from .. import loader, utils
 import logging
@@ -37,7 +37,8 @@ def register(cb):
 class LydiaMod(loader.Module):
     """Talks to a robot instead of a human"""
     def __init__(self):
-        self.config = loader.ModuleConfig("CLIENT_KEY", None, _("The API key for lydia, acquire from @IntellivoidDev"),
+        self.config = loader.ModuleConfig("CLIENT_KEY", None, _("The API key for lydia, acquire from "
+                                                                "https://coffeehouse.intellivoid.net"),
                                           "IGNORE_NO_COMMON", False, _("Boolean to ignore users who have no chats "
                                                                        + "in common with you"))
         self.name = _("Lydia anti-PM")

@@ -16,6 +16,8 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# requires: git+https://gitlab.com/mattia.basaglia/tgs@master cairosvg Pillow>=6.1.0
+
 from .. import loader, utils
 
 import logging
