@@ -27,19 +27,29 @@ def register(cb):
     cb(TTSMod())
 
 
+@loader.tds
 class TTSMod(loader.Module):
+    strings = {"name": "Text to speech",
+               "tts_lang_cfg": "Set your language code for the TTS here.",
+               "tts_needs_text": "<code>I need some text to convert to speech!</code>"}
+
     def __init__(self):
-        self.name = "Text to speech"
+        self.config = loader.ModuleConfig("TTS_LANG", "en", lambda: self.strings["tts_lang_cfg"])
+        self.name = self.strings["name"]
 
     async def ttscmd(self, message):
         """Convert text to speech with Google APIs"""
-        args = utils.get_args_raw(message)
-        if not args:
-            args = (await message.get_reply_message()).message
+        text = utils.get_args_raw(message.message)
+        if len(text) == 0:
+            if message.is_reply:
+                text = (await message.get_reply_message()).message
+            else:
+                await utils.answer(message, self.strings["tts_needs_text"])
+                return
 
-        tts = await utils.run_sync(gTTS, args)
+        tts = await utils.run_sync(gTTS, text, lang=self.config["TTS_LANG"])
         voice = BytesIO()
-        tts.write_to_fp(voice)
+        await utils.run_sync(tts.write_to_fp, voice)
         voice.seek(0)
         voice.name = "voice.mp3"
 
