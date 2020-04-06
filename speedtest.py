@@ -33,7 +33,7 @@ def register(cb):
 @loader.tds
 class SpeedtestMod(loader.Module):
     """Uses speedtest.net"""
-    strings = {"name": "Speedtest",
+    self.strings = {"name": "Speedtest",
                "running": "<code>Running speedtest...</code>",
                "results_header": "<b>Speedtest Results:</b>",
                "dl_speed": "<b>Download:</b> <code>{} MiB/s</code>",
