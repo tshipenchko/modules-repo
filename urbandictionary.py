@@ -30,18 +30,10 @@ def register(cb):
     cb(UrbanDictionaryMod())
 
 
-@loader.tds
 class UrbanDictionaryMod(loader.Module):
     """Define word meaning using UrbanDictionary."""
-    strings = {"name": "Urban Dictionary",
-               "null_args": "<b>Provide a word(s) to define.</b>",
-               "not_found": "<b>Couldn't find definition for that.</b>",
-               "result": "<b>Text</b>: <code>{}</code>\
-               \n<b>Meaning</b>: <code>{}</code>\
-               \n<b>Example</b>: <code>{}</code>"}
-
     def __init__(self):
-        self.name = self.strings["name"]
+        self.name = _("Urban Dictionary")
         self.urban = asyncurban.UrbanDictionary()
 
     async def urbancmd(self, message):
@@ -51,14 +43,12 @@ class UrbanDictionaryMod(loader.Module):
         args = utils.get_args_raw(message)
 
         if not args:
-            await utils.answer(message, self.strings["null_args"])
-            return
+            return await utils.answer(message, _("<b>Provide a word(s) to define.</b>"))
 
         try:
             definition = await self.urban.get_word(args)
         except asyncurban.WordNotFoundError:
-            await utils.answer(message, self.strings["not_found"])
-            return
+            return await utils.answer(message, _("<b>Couldn't find definition for that.</b>"))
 
-        await utils.answer(message, self.strings["result"].format(definition.word, definition.definition,
-                                                                  definition.example))
+        await utils.answer(message, _("<b>Text</b>: <code>{}</code>\n<b>Meaning</b>: <code>{}\n<b>Example</b>: <code>"
+                                      "{}</code>").format(definition.word, definition.definition, definition.example))
