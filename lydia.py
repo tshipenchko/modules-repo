@@ -40,7 +40,9 @@ class LydiaMod(loader.Module):
         self.config = loader.ModuleConfig("CLIENT_KEY", None, _("The API key for lydia, acquire from "
                                                                 "https://coffeehouse.intellivoid.net"),
                                           "IGNORE_NO_COMMON", False, _("Boolean to ignore users who have no chats "
-                                                                       + "in common with you"))
+                                                                       + "in common with you"),
+                                          "DISABLED", False, _("Whether Lydia defaults to enabled in private chats"
+                                                               " (if True, you'll have to use forcelydia"))
         self.name = _("Lydia anti-PM")
         self._ratelimit = []
         self._cleanup = None
@@ -199,6 +201,8 @@ class LydiaMod(loader.Module):
                     ))
 
     def get_allowed(self, id):
+        if self.config["ENABLED_BY_DEFAULT"]:
+            return True
         return id in self._db.get(__name__, "allow", [])
 
     def is_forced(self, chat, user_id):
