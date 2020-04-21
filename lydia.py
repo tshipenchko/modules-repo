@@ -201,7 +201,7 @@ class LydiaMod(loader.Module):
                     ))
 
     def get_allowed(self, id):
-        if self.config["ENABLED_BY_DEFAULT"]:
+        if self.config["DISABLED"]:
             return True
         return id in self._db.get(__name__, "allow", [])
 
