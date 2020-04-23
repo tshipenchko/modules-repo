@@ -49,6 +49,7 @@ class UserInfoMod(loader.Module):
         reply = _("First name: <code>{}</code>").format(utils.escape_html(ascii(full.user.first_name)))
         if full.user.last_name is not None:
             reply += _("\nLast name: <code>{}</code>").format(utils.escape_html(ascii(full.user.last_name)))
+        reply += _("\nID: <code>{}</code>").format(utils.escape_html(full.user.id))
         reply += _("\nBio: <code>{}</code>").format(utils.escape_html(ascii(full.about)))
         reply += _("\nRestricted: <code>{}</code>").format(utils.escape_html(str(full.user.restricted)))
         reply += _("\nDeleted: <code>{}</code>").format(utils.escape_html(str(full.user.deleted)))
