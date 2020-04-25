@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# requires: git+https://gitlab.com/mattia.basaglia/tgs@master cairosvg Pillow>=6.1.0
+# requires: git+https://gitlab.com/mattia.basaglia/python-lottie@master cairosvg Pillow>=6.1.0
 
 from .. import loader, utils
 
@@ -31,9 +31,9 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 try:
-    import tgs
+    import lottie
 except OSError:
-    logger.exception("TGS not available")
+    logger.exception("Lottie not available")
 
 warnings.simplefilter("error", Image.DecompressionBombWarning)
 
@@ -281,11 +281,11 @@ class StickersMod(loader.Module):
             file = BytesIO()
             await target.download_media(file)
             file.seek(0)
-            anim = await utils.run_sync(tgs.parsers.tgs.parse_tgs, file)
+            anim = await utils.run_sync(lottie.parsers.tgs.parse_tgs, file)
             file.close()
             result = BytesIO()
             result.name = "animation.gif"
-            await utils.run_sync(tgs.exporters.gif.export_gif, anim, result, quality, fps)
+            await utils.run_sync(lottie.exporters.gif.export_gif, anim, result, quality, fps)
             result.seek(0)
             await utils.answer(message, result)
         finally:
