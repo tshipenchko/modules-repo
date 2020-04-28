@@ -28,10 +28,38 @@ def register(cb):
     cb(UserInfoMod())
 
 
+@loader.tds
 class UserInfoMod(loader.Module):
     """Tells you about people"""
+    strings = {"name": "User Info",
+               "first_name": "First name: <code>{}</code>",
+               "last_name": "\nLast name: <code>{}</code>",
+               "id": "\nID: <code>{}</code>",
+               "bio": "\nBio: <code>{}</code>",
+               "restricted": "\nRestricted: <code>{}</code>",
+               "deleted": "\nDeleted: <code>{}</code>",
+               "bot": "\nBot: <code>{}</code>",
+               "verified": "\nVerified: <code>{}</code>",
+               "dc_id": "\nDC ID: <code>{}</code>",
+               "find_error": "<b>Couldn't find that user.</b>",
+               "no_args_or_reply": "<b>No args or reply was provided.</b>",
+               "provide_user": "Provide a user to locate",
+               "searching_user": "Searching for user...",
+               "cannot_find": "Can't find user.",
+               "permalink_txt": "<a href='tg://user?id={uid}'>{txt}</a>",
+               "permalink_uid": "<a href='tg://user?id={uid}'>Permalink to {uid}</a>",
+               "encode_cfg_doc": "Encode unicode characters"}
+
     def __init__(self):
-        self.name = _("User Info")
+        self.config = loader.ModuleConfig("ENCODE", False, lambda: self.strings["encode_cfg_doc"])
+
+    def config_complete(self):
+        self.name = self.strings["name"]
+
+    def _handle_string(self, string):
+        if self.config["ENCODE"]:
+            return utils.escape_html(ascii(string))
+        return utils.escape_html(string)
 
     async def userinfocmd(self, message):
         """Use in reply to get user info"""
@@ -40,30 +68,30 @@ class UserInfoMod(loader.Module):
         else:
             args = utils.get_args(message)
             if not args:
-                return await utils.answer(message, "<b>No args or reply was provided.</b>")
+                return await utils.answer(message, self.strings["no_args_or_reply"])
             try:
                 full = await self.client(GetFullUserRequest(args[0]))
             except ValueError:
-                return await utils.answer(message, _("<b>Couldn't find that user.</b>"))
+                return await utils.answer(message, self.strings["find_error"])
         logger.debug(full)
-        reply = _("First name: <code>{}</code>").format(utils.escape_html(ascii(full.user.first_name)))
+        reply = self.strings["first_name"].format(self._handle_string(full.user.first_name))
         if full.user.last_name is not None:
-            reply += _("\nLast name: <code>{}</code>").format(utils.escape_html(ascii(full.user.last_name)))
-        reply += _("\nID: <code>{}</code>").format(utils.escape_html(full.user.id))
-        reply += _("\nBio: <code>{}</code>").format(utils.escape_html(ascii(full.about)))
-        reply += _("\nRestricted: <code>{}</code>").format(utils.escape_html(str(full.user.restricted)))
-        reply += _("\nDeleted: <code>{}</code>").format(utils.escape_html(str(full.user.deleted)))
-        reply += _("\nBot: <code>{}</code>").format(utils.escape_html(str(full.user.bot)))
-        reply += _("\nVerified: <code>{}</code>").format(utils.escape_html(str(full.user.verified)))
+            reply += self.strings["last_name"].format(self._handle_string(full.user.last_name))
+        reply += self.strings["id"].format(utils.escape_html(full.user.id))
+        reply += self.strings["bio"].format(self._handle_string(full.about))
+        reply += self.strings["restricted"].format(utils.escape_html(str(full.user.restricted)))
+        reply += self.strings["deleted"].format(utils.escape_html(str(full.user.deleted)))
+        reply += self.strings["bot"].format(utils.escape_html(str(full.user.bot)))
+        reply += self.strings["verified"].format(utils.escape_html(str(full.user.verified)))
         if full.user.photo:
-            reply += _("\nDC ID: <code>{}</code>").format(utils.escape_html(str(full.user.photo.dc_id)))
+            reply += self.strings["dc_id"].format(utils.escape_html(str(full.user.photo.dc_id)))
         await message.edit(reply)
 
     async def permalinkcmd(self, message):
         """Get permalink to user based on ID or username"""
         args = utils.get_args(message)
         if len(args) < 1:
-            await message.edit(_("Provide a user to locate"))
+            await message.edit(self.strings["provide_user"])
             return
         try:
             user = int(args[0])
@@ -74,17 +102,17 @@ class UserInfoMod(loader.Module):
         except ValueError as e:
             logger.debug(e)
             # look for the user
-            await message.edit(_("Searching for user..."))
+            await message.edit(self.strings["searching_user"])
             await self.client.get_dialogs()
             try:
                 user = await self.client.get_entity(user)
             except ValueError:
-                await message.edit(_("Can't find user."))
+                await message.edit(self.strings["cannot_find"])
                 return
         if len(args) > 1:
-            await utils.answer(message, "<a href='tg://user?id={uid}'>{txt}</a>".format(uid=user.id, txt=args[1]))
+            await utils.answer(message, self.strings["permalink_txt"].format(uid=user.id, txt=args[1]))
         else:
-            await message.edit(_("<a href='tg://user?id={uid}'>Permalink to {uid}</a>").format(uid=user.id))
+            await message.edit(self.strings["permalink_uid"].format(uid=user.id))
 
     async def client_ready(self, client, db):
         self.client = client
