@@ -1,5 +1,3 @@
-# -*- coding: future_fstrings -*-
-
 #    Friendly Telegram (telegram userbot)
 #    Copyright (C) 2018-2019 The Authors
 
@@ -257,7 +255,7 @@ class StickersMod(loader.Module):
                     thumb.close()
         finally:
             img.close()
-        packurl = utils.escape_html(f"https://t.me/addstickers/{button.text}")
+        packurl = utils.escape_html("https://t.me/addstickers/{}".format(button.text))
         await message.edit(_("<code>Sticker added to</code> <a href='{}'>pack</a><code>!</code>").format(packurl))
 
     async def gififycmd(self, message):

@@ -1,5 +1,3 @@
-# -*- coding: future_fstrings -*-
-
 #    Friendly Telegram (telegram userbot)
 #    Copyright (C) 2018-2019 The Authors
 
@@ -108,7 +106,7 @@ class QuotesMod(loader.Module):
 
         username = telethon.utils.get_display_name(user)
         if reply.fwd_from is not None and reply.fwd_from.post_author is not None:
-            username += f" ({reply.fwd_from.post_author})"
+            username += " ({})".format(reply.fwd_from.post_author)
         user_id = reply.from_id
 
         if reply.fwd_from:

@@ -1,5 +1,3 @@
-# -*- coding: future_fstrings -*-
-
 #    Friendly Telegram (telegram userbot)
 #    Copyright (C) 2018-2019 The Authors
 
@@ -47,7 +45,7 @@ class LetMeGoogleThatForYou(loader.Module):
             else:
                 text = self.strings["default"]
         query_encoded = urllib.parse.quote_plus(text)
-        lmgtfy_url = f"http://lmgtfy.com/?s=g&iie=1&q={query_encoded}"
+        lmgtfy_url = "http://lmgtfy.com/?s=g&iie=1&q={}".format(query_encoded)
         payload = {"format": "json", "url": lmgtfy_url}
         r = requests.get("http://is.gd/create.php", params=payload)
         await utils.answer(message, self.strings["result"].format((await utils.run_sync(r.json))["shorturl"], text))
