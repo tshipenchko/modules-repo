@@ -64,6 +64,9 @@ class AFKMod(loader.Module):
 
     async def watcher(self, message):
         if message.mentioned or getattr(message.to_id, "user_id", None) == self._me.id:
+            afk_state = self.get_afk()
+            if not afk_state:
+                return
             logger.debug("tagged!")
             ratelimit = self._db.get(__name__, "ratelimit", [])
             if utils.get_chat_id(message) in ratelimit:
@@ -80,10 +83,10 @@ class AFKMod(loader.Module):
             now = datetime.datetime.now().replace(microsecond=0)
             gone = datetime.datetime.fromtimestamp(self._db.get(__name__, "gone")).replace(microsecond=0)
             diff = now - gone
-            if self.get_afk() is True:
+            if afk_state is True:
                 ret = self.strings["afk"].format(diff)
-            elif self.get_afk() is not False:
-                ret = self.strings["afk_reason"].format(diff, self.get_afk())
+            elif afk_state is not False:
+                ret = self.strings["afk_reason"].format(diff, afk_state)
             await utils.answer(message, ret)
 
     def get_afk(self):
