@@ -33,7 +33,11 @@ def register(cb):
 @loader.tds
 class DiceMod(loader.Module):
     """Dice"""
-    strings = {"name": "Dice"}
+    strings = {"name": "Dice",
+               "dice_emoji_cfg_doc": "The emoji to be sent to Telegram as a dice. Can currently be either 🎲 or 🎯"}
+
+    def __init__(self):
+        self.config = loader.ModuleConfig("DICE_EMOJI", "🎲", lambda: self.strings["dice_emoji_cfg_doc"])
 
     def config_complete(self):
         self.name = self.strings["name"]
@@ -58,10 +62,11 @@ class DiceMod(loader.Module):
         chat = message.to_id
         client = message.client
         while True:
+            task = client.send_message(chat, file=InputMediaDice(self.config["DICE_EMOJI"]))
             if message:
-                message = (await asyncio.gather(message.delete(), client.send_message(chat, file=InputMediaDice())))[1]
+                message = (await asyncio.gather(message.delete(), task))[1]
             else:
-                message = await client.send_message(chat, file=InputMediaDice())
+                message = await task
             rolled = message.media.value
             logger.debug("Rolled %d", rolled)
             if rolled in values or not values:
