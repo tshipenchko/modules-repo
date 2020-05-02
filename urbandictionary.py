@@ -27,14 +27,15 @@ logger = logging.getLogger(__name__)
 def register(cb):
     cb(UrbanDictionaryMod())
 
+
 @loader.tds
 class UrbanDictionaryMod(loader.Module):
     """Define word meaning using UrbanDictionary."""
     strings = {"name": "Urban Dictionary",
                "provide_word": "<b>Provide a word(s) to define.</b>",
-               "def_error": "<b>Couldn"t find definition for that.</b>",
-               "result": "<b>Text</b>: <code>{}</code>\n<b>Meaning</b>: <code>{}\n<b>Example</b>: <code>{}</code>"
-    
+               "def_error": "<b>Couldn't find definition for that.</b>",
+               "result": "<b>Text</b>: <code>{}</code>\n<b>Meaning</b>: <code>{}\n<b>Example</b>: <code>{}</code>"}
+
     def __init__(self):
         self.name = self.strings["name"]
         self.urban = asyncurban.UrbanDictionary()

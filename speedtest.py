@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 def register(cb):
     cb(SpeedtestMod())
 
+
 @loader.tds
 class SpeedtestMod(loader.Module):
     """Uses speedtest.net"""
@@ -35,9 +36,8 @@ class SpeedtestMod(loader.Module):
                "results": "<b>Speedtest Results:</b>",
                "results_download": "<b>Download:</b> <code>{}</code><b>MiB/s</b>",
                "results_upload": "<b>Upload:</b> <code>{} </code><b>MiB/s</b>",
-               "results_ping": "<b>Ping:</b> <code>{} milliseconds</code>"
-               
-    
+               "results_ping": "<b>Ping:</b> <code>{} milliseconds</code>"}
+
     def __init__(self):
         self.name = self.strings["name"]
 

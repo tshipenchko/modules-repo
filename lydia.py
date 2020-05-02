@@ -33,12 +33,13 @@ logger = logging.getLogger(__name__)
 def register(cb):
     cb(LydiaMod())
 
+
 @loader.tds
 class LydiaMod(loader.Module):
     """Talks to a robot instead of a human"""
     strings = {"name": "Lydia anti-PM",
                "enable_disable_error_group": "<b>The AI service cannot be enabled or disabled in this chat. Is this a group chat?</b>",
-               "enable_error_user": "<b>The AI service cannot be enabled for this user. Perhaps it wasn"t disabled?</b>",
+               "enable_error_user": "<b>The AI service cannot be enabled for this user. Perhaps it wasn't disabled?</b>",
                "successfully_enabled": "<b>AI enabled for this user. </b>",
                "successfully_enabled_for_chat": "<b>AI enabled for that user in this chat.</b>",
                "cannot_find": "<b>Cannot find that user.</b>",

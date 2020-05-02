@@ -27,13 +27,14 @@ logger = logging.getLogger(__name__)
 def register(cb):
     cb(TranslateMod())
 
+
 @loader.tds
 class TranslateMod(loader.Module):
     """Translator"""
     strings = {"name": "Translator",
                "translated": "<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}</code><b> to </b><code>{to}</code><b> and it reads</b>\n<code>{output}</code>",
                "invalid_text": "Invalid text to translate"}
-    
+
     def __init__(self):
         self.commands = {"translate": self.translatecmd}
         self.config = loader.ModuleConfig("DEFAULT_LANG", "en", "Language to translate to by default",
