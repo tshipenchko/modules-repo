@@ -32,7 +32,7 @@ def register(cb):
 class TranslateMod(loader.Module):
     """Translator"""
     strings = {"name": "Translator",
-               "translated": "<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}"\
+               "translated": "<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}"
                "</code><b> to </b><code>{to}</code><b> and it reads</b>\n<code>{output}</code>",
                "invalid_text": "Invalid text to translate"}
 
