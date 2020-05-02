@@ -25,7 +25,9 @@ def register(cb):
 @loader.tds
 class YesNoMod(loader.Module):
     """Helps you make important life choices"""
-    strings = {"name": "YesNo"}
+    strings = {"name": "YesNo",
+               "yes_words": "Yes, Yup, Absolutely, Non't",
+               "no_words": "No, Nope, Nah, Yesn't"}
 
     def __init__(self):
         self.name = self.strings["name"]
@@ -33,8 +35,8 @@ class YesNoMod(loader.Module):
     async def yesnocmd(self, message):
         """Make a life choice"""
         # TODO translate
-        yes = ["Yes", "Yup", "Absolutely", "Non't"]
-        no = ["No", "Nope", "Nah", "Yesn't"]
+        yes = self.strings['yes_words'].split(', ')
+        no = self.strings['no_words'].split(', ')
         if random.getrandbits(1):
             response = random.choice(yes)
         else:

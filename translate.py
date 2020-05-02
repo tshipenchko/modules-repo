@@ -27,14 +27,18 @@ logger = logging.getLogger(__name__)
 def register(cb):
     cb(TranslateMod())
 
-
+@loader.tds
 class TranslateMod(loader.Module):
     """Translator"""
+    strings = {"name": "Translator",
+               "translated": "<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}</code><b> to </b><code>{to}</code><b> and it reads</b>\n<code>{output}</code>",
+               "invalid_text": "Invalid text to translate"}
+    
     def __init__(self):
         self.commands = {"translate": self.translatecmd}
         self.config = loader.ModuleConfig("DEFAULT_LANG", "en", "Language to translate to by default",
                                           "API_KEY", "", "API key from https://translate.yandex.com/developers/keys")
-        self.name = _("Translator")
+        self.name = self.strings["name"]
 
     def config_complete(self):
         self.tr = Translate(self.config["API_KEY"])
@@ -53,7 +57,7 @@ class TranslateMod(loader.Module):
         if len(text) == 0 and message.is_reply:
             text = (await message.get_reply_message()).message
         if len(text) == 0:
-            await message.edit(_("Invalid text to translate"))
+            await message.edit(self.strings['invalid_text'])
             return
         if args[0] == "":
             args[0] = self.tr.detect(text)
@@ -67,8 +71,7 @@ class TranslateMod(loader.Module):
         args[0] = args[0].lower()
         logger.debug(args)
         translated = self.tr.translate(text, args[1], args[0])
-        ret = _("<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}</code><b> to </b>"
-                + "<code>{to}</code><b> and it reads</b>\n<code>{output}</code>")
+        ret = self.strings['translated']
         ret = ret.format(text=utils.escape_html(text), frlang=utils.escape_html(args[0]),
                          to=utils.escape_html(args[1]), output=utils.escape_html(translated))
         await utils.answer(message, ret)
