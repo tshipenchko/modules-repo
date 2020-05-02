@@ -31,8 +31,8 @@ class YesNoMod(loader.Module):
 
     def __init__(self):
         self.config = loader.ModuleConfig(
-        "YES_WORDS", "Yes, Yup, Absolutely, Non't", self.strings["doc_yes_words"],
-        "NO_WORDS", "No, Nope, Nah, Yesn't", self.strings["doc_no_words"])
+            "YES_WORDS", "Yes, Yup, Absolutely, Non't", self.strings["doc_yes_words"],
+            "NO_WORDS", "No, Nope, Nah, Yesn't", self.strings["doc_no_words"])
         self.name = self.strings["name"]
 
     async def yesnocmd(self, message):
