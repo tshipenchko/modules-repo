@@ -41,21 +41,21 @@ def deg_to_text(deg):
 def round_to_sf(n, digits):
     return round(n, digits - 1 - int(math.floor(math.log10(abs(n)))))
 
+
 @loader.tds
 class WeatherMod(loader.Module):
     """Checks the weather
        Get an API key at https://openweathermap.org/appid"""
     strings = {"name": "Weather",
-               "provide_api": "<code>Please provide an API key via the configuration mode.</code>",
-               "invalid_temp_units": "<code>Invalid temperature units provided. Please reconfigure the module.</code>",
-               "result": "<code>Weather in {loc} is {w} with a high of {high} and a low of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind."}
+               "provide_api": "<b>Please provide an API key via the configuration mode.</b>",
+               "invalid_temp_units": "<b>Invalid temperature units provided. Please reconfigure the module.</b>"}
                
     
     def __init__(self):
         self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, "OpenWeatherMap City ID",
                                           "API_KEY", None, "API Key from https://openweathermap.org/appid",
                                           "TEMP_UNITS", "celsius", "Temperature unit as English")
-        self.name = self.strings['name']
+        self.name = self.strings["name"]
         self._owm = None
 
     def config_complete(self):
@@ -64,7 +64,7 @@ class WeatherMod(loader.Module):
     async def weathercmd(self, message):
         """.weather [location]"""
         if self.config["API_KEY"] is None:
-            await message.edit(self.strings['provide_api'])
+            await message.edit(self.strings["provide_api"])
             return
         args = utils.get_args_raw(message)
         func = None
@@ -94,9 +94,9 @@ class WeatherMod(loader.Module):
             weather = w.get_weather()
             temp = weather.get_temperature(self.config["TEMP_UNITS"])
         except ValueError:
-            await message.edit(self.strings['invalid_temp_units'])
+            await message.edit(self.strings["invalid_temp_units"])
             return
-        ret = self.strings['result']
+        ret = "<b>Weather in {loc} is {w} with a high of {high} and a low of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"
         ret = ret.format(loc=eh(w.get_location().get_name()), w=eh(w.get_weather().get_detailed_status().lower()),
                          high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
                          humid=eh(weather.get_humidity()),

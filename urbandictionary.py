@@ -32,11 +32,11 @@ class UrbanDictionaryMod(loader.Module):
     """Define word meaning using UrbanDictionary."""
     strings = {"name": "Urban Dictionary",
                "provide_word": "<b>Provide a word(s) to define.</b>",
-               "def_error": "<b>Couldn't find definition for that.</b>",
+               "def_error": "<b>Couldn"t find definition for that.</b>",
                "result": "<b>Text</b>: <code>{}</code>\n<b>Meaning</b>: <code>{}\n<b>Example</b>: <code>{}</code>"
     
     def __init__(self):
-        self.name = self.strings['name']
+        self.name = self.strings["name"]
         self.urban = asyncurban.UrbanDictionary()
 
     async def urbancmd(self, message):
@@ -46,11 +46,11 @@ class UrbanDictionaryMod(loader.Module):
         args = utils.get_args_raw(message)
 
         if not args:
-            return await utils.answer(message, self.strings['provide_word'])
+            return await utils.answer(message, self.strings["provide_word"])
 
         try:
             definition = await self.urban.get_word(args)
         except asyncurban.WordNotFoundError:
-            return await utils.answer(message, self.strings['def_error'])
+            return await utils.answer(message, self.strings["def_error"])
 
-        await utils.answer(message, self.strings['result'].format(definition.word, definition.definition, definition.example))
+        await utils.answer(message, self.strings["result"].format(definition.word, definition.definition, definition.example))

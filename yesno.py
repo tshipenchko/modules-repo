@@ -26,16 +26,18 @@ def register(cb):
 class YesNoMod(loader.Module):
     """Helps you make important life choices"""
     strings = {"name": "YesNo",
-               "yes_words": "Yes, Yup, Absolutely, Non't",
-               "no_words": "No, Nope, Nah, Yesn't"}
+               "doc_yes_words": "Yes words",
+               "doc_no_words": "No words"}
 
     def __init__(self):
+    	self.config = loader.ModuleConfig("YES_WORDS", "Yes, Yup, Absolutely, Non't", self.strings["doc_yes_words"],
+                                          "NO_WORDS", "No, Nope, Nah, Yesn't", self.strings["doc_no_words"])
         self.name = self.strings["name"]
 
     async def yesnocmd(self, message):
         """Make a life choice"""
-        yes = self.strings['yes_words'].split(', ')
-        no = self.strings['no_words'].split(', ')
+        yes = self.strings["yes_words"].split(", ")
+        no = self.strings["no_words"].split(", ")
         if random.getrandbits(1):
             response = random.choice(yes)
         else:

@@ -57,7 +57,7 @@ class TranslateMod(loader.Module):
         if len(text) == 0 and message.is_reply:
             text = (await message.get_reply_message()).message
         if len(text) == 0:
-            await message.edit(self.strings['invalid_text'])
+            await message.edit(self.strings["invalid_text"])
             return
         if args[0] == "":
             args[0] = self.tr.detect(text)
@@ -71,7 +71,7 @@ class TranslateMod(loader.Module):
         args[0] = args[0].lower()
         logger.debug(args)
         translated = self.tr.translate(text, args[1], args[0])
-        ret = self.strings['translated']
+        ret = self.strings["translated"]
         ret = ret.format(text=utils.escape_html(text), frlang=utils.escape_html(args[0]),
                          to=utils.escape_html(args[1]), output=utils.escape_html(translated))
         await utils.answer(message, ret)
