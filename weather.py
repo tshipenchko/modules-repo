@@ -95,7 +95,8 @@ class WeatherMod(loader.Module):
         except ValueError:
             await message.edit(self.strings["invalid_temp_units"])
             return
-        ret = "<b>Weather in {loc} is {w} with a high of {high} and a low of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"
+        ret = "<b>Weather in {loc} is {w} with a high of {high} and a low"\
+        "of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"
         ret = ret.format(loc=eh(w.get_location().get_name()), w=eh(w.get_weather().get_detailed_status().lower()),
                          high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
                          humid=eh(weather.get_humidity()),
