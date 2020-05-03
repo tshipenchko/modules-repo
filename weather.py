@@ -51,7 +51,9 @@ class WeatherMod(loader.Module):
                "invalid_temp_units": "<b>Invalid temperature units provided. Please reconfigure the module.</b>",
                "doc_default_loc": "OpenWeatherMap City ID",
                "doc_api_key": "API Key from https://openweathermap.org/appid",
-               "doc_temp_units": "Temperature unit as English"}
+               "doc_temp_units": "Temperature unit as English",
+               "result": "<b>Weather in {loc} is {w} with a high of {high} and a low"
+                         " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, lambda: self.strings["doc_default_loc"],
@@ -98,11 +100,11 @@ class WeatherMod(loader.Module):
         except ValueError:
             await message.edit(self.strings["invalid_temp_units"])
             return
-        ret = "<b>Weather in {loc} is {w} with a high of {high} and a low"
-        " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"
-        ret = ret.format(loc=eh(w.get_location().get_name()), w=eh(w.get_weather().get_detailed_status().lower()),
-                         high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
-                         humid=eh(weather.get_humidity()),
-                         ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
-                         wd=eh(deg_to_text(weather.get_wind().get("deg", None))))
+        # ret = 
+        ret = self.strings['result'].format(loc=eh(w.get_location().get_name()),
+                                            w=eh(w.get_weather().get_detailed_status().lower()),
+                                            high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
+                                            humid=eh(weather.get_humidity()),
+                                            ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
+                                            wd=eh(deg_to_text(weather.get_wind().get("deg", None))))
         await message.edit(ret)
