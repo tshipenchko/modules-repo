@@ -37,8 +37,8 @@ class YesNoMod(loader.Module):
 
     async def yesnocmd(self, message):
         """Make a life choice"""
-        yes = self.config["yes_words"]
-        no = self.config["no_words"]
+        yes = self.config["YES_WORDS"]
+        no = self.config["NO_WORDS"]
         if random.getrandbits(1):
             response = random.choice(yes)
         else:
