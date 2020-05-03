@@ -38,7 +38,7 @@ class SpeedtestMod(loader.Module):
                "results_upload": "<b>Upload:</b> <code>{} </code><b>MiB/s</b>",
                "results_ping": "<b>Ping:</b> <code>{} milliseconds</code>"}
 
-    def __init__(self):
+    def config_complete(self):
         self.name = self.strings["name"]
 
     async def speedtestcmd(self, message):

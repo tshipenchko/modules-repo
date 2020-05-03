@@ -37,8 +37,10 @@ class UrbanDictionaryMod(loader.Module):
                "result": "<b>Text</b>: <code>{}</code>\n<b>Meaning</b>: <code>{}\n<b>Example</b>: <code>{}</code>"}
 
     def __init__(self):
-        self.name = self.strings["name"]
         self.urban = asyncurban.UrbanDictionary()
+
+    def config_complete(self):
+        self.name = self.strings['name']
 
     async def urbancmd(self, message):
         """Define word meaning. Usage:

@@ -52,16 +52,18 @@ class LydiaMod(loader.Module):
                " https://coffeehouse.intellivoid.net",
                "doc_ignore_no_common": "Boolean to ignore users who have no chats in common with you",
                "doc_disabled": "Whether Lydia defaults to enabled"
-               "in private chats (if True, you'll have to use forcelydia"}
+                               " in private chats (if True, you'll have to use forcelydia"}
 
     def __init__(self):
-        self.name = self.strings["name"]
-        self.config = loader.ModuleConfig("CLIENT_KEY", None, self.strings["doc_client_key"],
-                                          "IGNORE_NO_COMMON", False, self.strings["doc_ignore_no_common"],
-                                          "DISABLED", False, self.strings["doc_disabled"])
+        self.config = loader.ModuleConfig("CLIENT_KEY", None, lambda: self.strings["doc_client_key"],
+                                          "IGNORE_NO_COMMON", False, lambda: self.strings["doc_ignore_no_common"],
+                                          "DISABLED", False, lambda: self.strings["doc_disabled"])
         self._ratelimit = []
         self._cleanup = None
         self._lydia = None
+
+    def config_complete(self):
+        self.name = self.strings["name"]
 
     async def client_ready(self, client, db):
         self._db = db
@@ -92,7 +94,7 @@ class LydiaMod(loader.Module):
             next = t + 86399
         if nsessions != sessions:
             self._db.set(__name__, "sessions", nsessions)
-        # Don"t worry about the 1 day limit below 3.7.1, if it isn"t expired we will just reschedule,
+        # Don't worry about the 1 day limit below 3.7.1, if it isn't expired we will just reschedule,
         # as nothing will be matched for deletion.
         await asyncio.sleep(min(next - t, 86399))
 

@@ -34,16 +34,18 @@ class TranslateMod(loader.Module):
     strings = {"name": "Translator",
                "translated": "<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}"
                "</code><b> to </b><code>{to}</code><b> and it reads</b>\n<code>{output}</code>",
-               "invalid_text": "Invalid text to translate"}
+               "invalid_text": "Invalid text to translate",
+               "doc_default_lang": "Language to translate to by default",
+               "doc_api_key": "API key from https://translate.yandex.com/developers/keys"}
 
     def __init__(self):
         self.commands = {"translate": self.translatecmd}
-        self.config = loader.ModuleConfig("DEFAULT_LANG", "en", "Language to translate to by default",
-                                          "API_KEY", "", "API key from https://translate.yandex.com/developers/keys")
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("DEFAULT_LANG", "en", lambda: self.strings["doc_default_lang"],
+                                          "API_KEY", "", lambda: self.strings["doc_api_key"])
 
     def config_complete(self):
         self.tr = Translate(self.config["API_KEY"])
+        self.name = self.strings["name"]
 
     async def translatecmd(self, message):
         """.translate [from_lang->][->to_lang] <text>"""
@@ -73,7 +75,6 @@ class TranslateMod(loader.Module):
         args[0] = args[0].lower()
         logger.debug(args)
         translated = self.tr.translate(text, args[1], args[0])
-        ret = self.strings["translated"]
-        ret = ret.format(text=utils.escape_html(text), frlang=utils.escape_html(args[0]),
+        ret = self.strings["translated"].format(text=utils.escape_html(text), frlang=utils.escape_html(args[0]),
                          to=utils.escape_html(args[1]), output=utils.escape_html(translated))
         await utils.answer(message, ret)

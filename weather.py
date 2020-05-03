@@ -48,17 +48,20 @@ class WeatherMod(loader.Module):
        Get an API key at https://openweathermap.org/appid"""
     strings = {"name": "Weather",
                "provide_api": "<b>Please provide an API key via the configuration mode.</b>",
-               "invalid_temp_units": "<b>Invalid temperature units provided. Please reconfigure the module.</b>"}
+               "invalid_temp_units": "<b>Invalid temperature units provided. Please reconfigure the module.</b>",
+               "doc_default_loc": "OpenWeatherMap City ID",
+               "doc_api_key": "API Key from https://openweathermap.org/appid",
+               "doc_temp_units": "Temperature unit as English"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, "OpenWeatherMap City ID",
-                                          "API_KEY", None, "API Key from https://openweathermap.org/appid",
-                                          "TEMP_UNITS", "celsius", "Temperature unit as English")
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, lambda: self.strings["doc_default_loc"],
+                                          "API_KEY", None, lambda: self.strings["doc_api_key"],
+                                          "TEMP_UNITS", "celsius", lambda: self.strings["doc_temp_units"])
         self._owm = None
 
     def config_complete(self):
         self._owm = pyowm.OWM(self.config["API_KEY"])
+        self.name = self.strings["name"]
 
     async def weathercmd(self, message):
         """.weather [location]"""
@@ -96,7 +99,7 @@ class WeatherMod(loader.Module):
             await message.edit(self.strings["invalid_temp_units"])
             return
         ret = "<b>Weather in {loc} is {w} with a high of {high} and a low"
-        ret += " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"
+              " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"
         ret = ret.format(loc=eh(w.get_location().get_name()), w=eh(w.get_weather().get_detailed_status().lower()),
                          high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
                          humid=eh(weather.get_humidity()),
