@@ -40,7 +40,7 @@ class UrbanDictionaryMod(loader.Module):
         self.urban = asyncurban.UrbanDictionary()
 
     def config_complete(self):
-        self.name = self.strings['name']
+        self.name = self.strings["name"]
 
     async def urbancmd(self, message):
         """Define word meaning. Usage:
