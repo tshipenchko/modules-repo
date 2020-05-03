@@ -100,8 +100,7 @@ class WeatherMod(loader.Module):
         except ValueError:
             await message.edit(self.strings["invalid_temp_units"])
             return
-        # ret = 
-        ret = self.strings['result'].format(loc=eh(w.get_location().get_name()),
+        ret = self.strings["result"].format(loc=eh(w.get_location().get_name()),
                                             w=eh(w.get_weather().get_detailed_status().lower()),
                                             high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
                                             humid=eh(weather.get_humidity()),
