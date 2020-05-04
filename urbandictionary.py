@@ -55,5 +55,5 @@ class UrbanDictionaryMod(loader.Module):
             definition = await self.urban.get_word(args)
         except asyncurban.WordNotFoundError:
             return await utils.answer(message, self.strings["def_error"])
-        result = message, self.strings["result"].format(definition.word, definition.definition, definition.example)
-        await utils.answer(result)
+        result = self.strings["result"].format(definition.word, definition.definition, definition.example)
+        await utils.answer(message, result)
