@@ -68,7 +68,7 @@ class WeatherMod(loader.Module):
     async def weathercmd(self, message):
         """.weather [location]"""
         if self.config["API_KEY"] is None:
-            await message.edit(self.strings["provide_api"])
+            await utils.answer(message, self.strings["provide_api"])
             return
         args = utils.get_args_raw(message)
         func = None
@@ -98,7 +98,7 @@ class WeatherMod(loader.Module):
             weather = w.get_weather()
             temp = weather.get_temperature(self.config["TEMP_UNITS"])
         except ValueError:
-            await message.edit(self.strings["invalid_temp_units"])
+            await utils.answer(message, self.strings["invalid_temp_units"])
             return
         ret = self.strings["result"].format(loc=eh(w.get_location().get_name()),
                                             w=eh(w.get_weather().get_detailed_status().lower()),
@@ -106,4 +106,4 @@ class WeatherMod(loader.Module):
                                             humid=eh(weather.get_humidity()),
                                             ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
                                             wd=eh(deg_to_text(weather.get_wind().get("deg", None))))
-        await message.edit(ret)
+        await utils.answer(message, ret)
