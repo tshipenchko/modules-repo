@@ -34,9 +34,9 @@ class SpeedtestMod(loader.Module):
     strings = {"name": "Speedtest",
                "running": "<b>Running speedtest...</b>",
                "results": "<b>Speedtest Results:</b>",
-               "results_download": "<b>Download:</b> <code>{}</code><b>MiB/s</b>",
-               "results_upload": "<b>Upload:</b> <code>{} </code><b>MiB/s</b>",
-               "results_ping": "<b>Ping:</b> <code>{} milliseconds</code>"}
+               "results_download": "<b>Download:</b> <code>{}</code> <b>MiB/s</b>",
+               "results_upload": "<b>Upload:</b> <code>{}</code> <b>MiB/s</b>",
+               "results_ping": "<b>Ping:</b> <code>{}</code> <b>ms</b>"}
 
     def config_complete(self):
         self.name = self.strings["name"]
