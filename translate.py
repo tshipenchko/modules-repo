@@ -32,8 +32,8 @@ def register(cb):
 class TranslateMod(loader.Module):
     """Translator"""
     strings = {"name": "Translator",
-               "translated": "<b>Translated </b><code>{text}</code>\n<b>from </b><code>{frlang}"
-               "</code><b> to </b><code>{to}</code><b> and it reads</b>\n<code>{output}</code>",
+               "translated": "<b>From: </b><code>{frlang}</code>"
+               "\n<b>To: </b><code>{to}</code>\n\n{output}",
                "invalid_text": "Invalid text to translate",
                "doc_default_lang": "Language to translate to by default",
                "doc_api_key": "API key from https://translate.yandex.com/developers/keys"}
@@ -75,6 +75,7 @@ class TranslateMod(loader.Module):
         args[0] = args[0].lower()
         logger.debug(args)
         translated = self.tr.translate(text, args[1], args[0])
-        ret = self.strings["translated"].format(text=utils.escape_html(text), frlang=utils.escape_html(args[0]),
-                                                to=utils.escape_html(args[1]), output=utils.escape_html(translated))
+        ret = self.strings["translated"].format(from_lang=utils.escape_html(args[0]),
+                                                to_lang=utils.escape_html(args[1]),
+                                                output=utils.escape_html(translated))
         await utils.answer(message, ret)
