@@ -48,7 +48,7 @@ class BanMod(loader.Module):
                "promoted": "<code>{}</code> <b>is now powered with admin rights!</b>",
                "demoted": "<code>{}</code> <b>is now stripped off of their admin rights!</b>"}
 
-    def __init__(self):
+    def config_complete(self):
         self.name = self.strings["name"]
 
     async def bancmd(self, message):
