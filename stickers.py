@@ -78,7 +78,7 @@ class StickersMod(loader.Module):
             emojis = args[1]
         elif sticker.sticker:
             emojis = sticker.file.emoji
-        else:
+        if not emojis:
             emojis = self.config["DEFAULT_STICKER_EMOJI"]
         logger.debug(emojis)
         animated = sticker.file.mime_type == "application/x-tgsticker"
