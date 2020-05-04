@@ -32,8 +32,8 @@ def register(cb):
 class TranslateMod(loader.Module):
     """Translator"""
     strings = {"name": "Translator",
-               "translated": "<b>From: </b><code>{frlang}</code>"
-               "\n<b>To: </b><code>{to}</code>\n\n{output}",
+               "translated": "<b>From: </b><code>{from_lang}</code>"
+               "\n<b>To: </b><code>{to_lang}</code>\n\n{output}",
                "invalid_text": "Invalid text to translate",
                "doc_default_lang": "Language to translate to by default",
                "doc_api_key": "API key from https://translate.yandex.com/developers/keys"}
