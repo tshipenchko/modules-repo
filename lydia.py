@@ -55,15 +55,12 @@ class LydiaMod(loader.Module):
                                " in private chats (if True, you'll have to use forcelydia"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("CLIENT_KEY", None, lambda: self.strings["doc_client_key"],
-                                          "IGNORE_NO_COMMON", False, lambda: self.strings["doc_ignore_no_common"],
-                                          "DISABLED", False, lambda: self.strings["doc_disabled"])
+        self.config = loader.ModuleConfig("CLIENT_KEY", None, lambda m: self.strings("doc_client_key", m),
+                                          "IGNORE_NO_COMMON", False, lambda m: self.strings("doc_ignore_no_common", m),
+                                          "DISABLED", False, lambda m: self.strings("doc_disabled", m))
         self._ratelimit = []
         self._cleanup = None
         self._lydia = None
-
-    def config_complete(self):
-        self.name = self.strings["name"]
 
     async def client_ready(self, client, db):
         self._db = db
@@ -108,15 +105,15 @@ class LydiaMod(loader.Module):
         else:
             user = getattr(message.to_id, "user_id", None)
         if user is None:
-            await utils.answer(message, self.strings["enable_disable_error_group"])
+            await utils.answer(message, self.strings("enable_disable_error_group", message))
             return
         try:
             old.remove(user)
             self._db.set(__name__, "allow", old)
         except ValueError:
-            await utils.answer(message, self.strings["enable_error_user"])
+            await utils.answer(message, self.strings("enable_error_user", message))
             return
-        await utils.answer(message, self.strings["successfully_enabled"])
+        await utils.answer(message, self.strings("successfully_enabled", message))
 
     async def forcelydiacmd(self, message):
         """Enables Lydia for user in specific chat"""
@@ -125,10 +122,10 @@ class LydiaMod(loader.Module):
         else:
             user = getattr(message.to_id, "user_id", None)
         if user is None:
-            await utils.answer(message, self.strings["cannot_find"])
+            await utils.answer(message, self.strings("cannot_find", message))
             return
         self._db.set(__name__, "force", self._db.get(__name__, "force", []) + [[utils.get_chat_id(message), user]])
-        await utils.answer(message, self.strings["successfully_enabled_for_chat"])
+        await utils.answer(message, self.strings("successfully_enabled_for_chat", message))
 
     async def dislydiacmd(self, message):
         """Disables Lydia for the target user"""
@@ -137,7 +134,7 @@ class LydiaMod(loader.Module):
         else:
             user = getattr(message.to_id, "user_id", None)
         if user is None:
-            await utils.answer(message, self.strings["enable_disable_error_group"])
+            await utils.answer(message, self.strings("enable_disable_error_group", message))
             return
 
         old = self._db.get(__name__, "force")
@@ -147,17 +144,17 @@ class LydiaMod(loader.Module):
         except (ValueError, TypeError, AttributeError):
             pass
         self._db.set(__name__, "allow", self._db.get(__name__, "allow", []) + [user])
-        await message.edit(self.strings["successfully_disabled"])
+        await utils.answer(message, self.strings("successfully_disabled", message))
 
     async def cleanlydiadisabledcmd(self, message):
         """ Remove all lydia-disabled users from DB. """
         self._db.set(__name__, "allow", [])
-        return await utils.answer(message, self.strings["cleanup_ids"])
+        return await utils.answer(message, self.strings("cleanup_ids", message))
 
     async def cleanlydiasessionscmd(self, message):
         """Remove all active and not active lydia sessions from DB"""
         self._db.set(__name__, "sessions", {})
-        return await utils.answer(message, self.strings["cleanup_sessions"])
+        return await utils.answer(message, self.strings("cleanup_sessions", message))
 
     async def watcher(self, message):
         if not self.config["CLIENT_KEY"]:

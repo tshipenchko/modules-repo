@@ -41,9 +41,6 @@ class MockMod(loader.Module):
                "vapor_args": "<b>You can't vaporize nothing, can you?</b>",
                "shout_args": "<b>You can't shout nothing.</b>"}
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
     async def mockcmd(self, message):
         """Use in reply to another message or as .mock <text>"""
         text = utils.get_args_raw(message.message)
@@ -51,7 +48,7 @@ class MockMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["mock_args"])
+                await utils.answer(message, self.strings("mock_args", message))
                 return
         text = list(text)
         n = 0
@@ -66,14 +63,14 @@ class MockMod(loader.Module):
             rn += 1
         text = "".join(text)
         logger.debug(text)
-        await message.edit(text)
+        await utils.answer(message, text)
 
     async def figletcmd(self, message):
         """.figlet <font> <text>"""
         # We can't localise figlet due to a lack of fonts
         args = utils.get_args(message)
         if len(args) < 2:
-            await utils.answer(message, self.strings["figlet_args"])
+            await utils.answer(message, self.strings("figlet_args", message))
             return
         text = " ".join(args[1:])
         mode = args[0]
@@ -82,9 +79,9 @@ class MockMod(loader.Module):
         try:
             fig = Figlet(font=mode, width=30)
         except FontNotFound:
-            await utils.answer(message, self.strings["no_font"])
+            await utils.answer(message, self.strings("no_font", message))
             return
-        await message.edit("<code>\u206a" + utils.escape_html(fig.renderText(text)) + "</code>")
+        await utils.answer(message, "<code>\u206a" + utils.escape_html(fig.renderText(text)) + "</code>")
 
     async def uwucmd(self, message):
         """Use in wepwy to anyothew message ow as .uwu <text>"""
@@ -93,14 +90,14 @@ class MockMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["uwu_args"])
+                await utils.answer(message, self.strings("uwu_args", message))
                 return
         reply_text = re.sub(r"(r|l)", "w", text)
         reply_text = re.sub(r"(R|L)", "W", reply_text)
         reply_text = re.sub(r"n([aeiouAEIOU])", r"ny\1", reply_text)
         reply_text = re.sub(r"N([aeiouAEIOU])", r"Ny\1", reply_text)
         reply_text = reply_text.replace("ove", "uv")
-        await message.edit(reply_text)
+        await utils.answer(message, reply_text)
 
     async def clapcmd(self, message):
         """Use in reply to another message or as .clap <text>"""
@@ -109,7 +106,7 @@ class MockMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["clap_args"])
+                await utils.answer(message, self.strings("clap_args", message))
                 return
         clapped_text = re.sub(" ", " 👏 ", text)
         reply_text = "👏 {} 👏".format(clapped_text)
@@ -122,7 +119,7 @@ class MockMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["vapor_args"])
+                await utils.answer(message, self.strings("vapor_args", message))
                 return
         reply_text = list()
         for char in text:
@@ -142,7 +139,7 @@ class MockMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["shout_args"])
+                await utils.answer(message, self.strings("shout_args", message))
                 return
         result = " ".join(text) + "\n" + "\n".join(sym + " " * (pos * 2 + 1) + sym for pos, sym in enumerate(text[1:]))
         await utils.answer(message, "<code>" + utils.escape_html(result) + "</code>")

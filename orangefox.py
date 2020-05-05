@@ -47,11 +47,8 @@ class OrangeFoxMod(loader.Module):
 
     def __init__(self):
         self.config = loader.ModuleConfig("API_HOST", "https://api.orangefox.tech/",
-                                          lambda: self.strings["api_host_cfg_doc"])
+                                          lambda m: self.strings("api_host_cfg_doc", m))
         self.session = aiohttp.ClientSession()
-
-    def config_complete(self):
-        self.name = self.strings["name"]
 
     async def ofoxcmd(self, message):
         """Get's last OrangeFox releases"""
@@ -60,35 +57,36 @@ class OrangeFoxMod(loader.Module):
         if args:
             codename = args[0].lower()
             if codename not in [a["codename"] for a in devices]:
-                await utils.answer(message, self.strings["no_such_device"])
+                await utils.answer(message, self.strings("no_such_device", message))
                 return
 
             release = await self._send_request("last_stable_release", codename)
             device = await self._send_request("details", codename)
 
-            text = self.strings["header_stable"]
-            text += self.strings["device_info"].format(device["fullname"], device["codename"])
-            text += self.strings["version"].format(release["version"])
-            text += self.strings["release_date"].format(release["date"])
-            text += self.strings["version"].format(release["version"])
+            text = self.strings("header_stable", message)
+            text += self.strings("device_info", message).format(device["fullname"], device["codename"])
+            text += self.strings("version", message).format(release["version"])
+            text += self.strings("release_date", message).format(release["date"])
+            text += self.strings("version", message).format(release["version"])
 
             if device["maintained"] in (1, 2, 3):
-                text += self.strings["maintained_" + str(device["maintained"])].format(device["maintainer"])
+                text += self.strings("maintained_" + str(device["maintained"]), message).format(device["maintainer"])
 
-            text += self.strings["file"].format(release["file_name"], release["size_human"])
-            text += self.strings["file_md5"].format(release["md5"])
+            text += self.strings("file", message).format(release["file_name"], release["size_human"])
+            text += self.strings("file_md5", message).format(release["md5"])
 
             if "notes" in release:
-                text += self.strings["build_notes"]
+                text += self.strings("build_notes", message)
                 text += release["notes"]
 
-            text += "\n<a href=\"{}\">{}</a>".format(release["url"], self.strings["download_link_text"])
+            text += "\n<a href=\"{}\">{}</a>".format(release["url"], self.strings("download_link_text", message))
             if "sf" in release:
-                text += " | <a href=\"{}\">{}</a>".format(release["sf"]["url"], self.strings["mirror_link_text"])
+                text += " | <a href=\"{}\">{}</a>".format(release["sf"]["url"],
+                                                          self.strings("mirror_link_text", message))
 
             await utils.answer(message, text)
         else:
-            text = self.strings["list_devices_stable_header"]
+            text = self.strings("list_devices_stable_header", message)
             codenames = await self._send_request("available_stable_releases")
 
             for device in devices:

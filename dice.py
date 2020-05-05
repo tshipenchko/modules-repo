@@ -37,10 +37,7 @@ class DiceMod(loader.Module):
                "dice_emoji_cfg_doc": "The emoji to be sent to Telegram as a dice. Can currently be either 🎲 or 🎯"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("DICE_EMOJI", "🎲", lambda: self.strings["dice_emoji_cfg_doc"])
-
-    def config_complete(self):
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("DICE_EMOJI", "🎲", lambda m: self.strings("dice_emoji_cfg_doc", m))
 
     async def dicecmd(self, message):
         """Rolls a die (optionally with the specified value)"""

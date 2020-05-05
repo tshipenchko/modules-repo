@@ -34,8 +34,7 @@ class TTSMod(loader.Module):
                "tts_needs_text": "<code>I need some text to convert to speech!</code>"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("TTS_LANG", "en", lambda: self.strings["tts_lang_cfg"])
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("TTS_LANG", "en", lambda m: self.strings("tts_lang_cfg", m))
 
     async def ttscmd(self, message):
         """Convert text to speech with Google APIs"""
@@ -44,7 +43,7 @@ class TTSMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["tts_needs_text"])
+                await utils.answer(message, self.strings("tts_needs_text", message))
                 return
 
         tts = await utils.run_sync(gTTS, text, lang=self.config["TTS_LANG"])

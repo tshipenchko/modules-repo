@@ -39,9 +39,6 @@ class UrbanDictionaryMod(loader.Module):
     def __init__(self):
         self.urban = asyncurban.UrbanDictionary()
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
     async def urbancmd(self, message):
         """Define word meaning. Usage:
             .urban <word(s)>"""
@@ -49,11 +46,11 @@ class UrbanDictionaryMod(loader.Module):
         args = utils.get_args_raw(message)
 
         if not args:
-            return await utils.answer(message, self.strings["provide_word"])
+            return await utils.answer(message, self.strings("provide_word", message))
 
         try:
             definition = await self.urban.get_word(args)
         except asyncurban.WordNotFoundError:
-            return await utils.answer(message, self.strings["def_error"])
-        result = self.strings["result"].format(definition.word, definition.definition, definition.example)
+            return await utils.answer(message, self.strings("def_error", message))
+        result = self.strings("result", message).format(definition.word, definition.definition, definition.example)
         await utils.answer(message, result)

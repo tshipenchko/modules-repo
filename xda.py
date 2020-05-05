@@ -40,7 +40,6 @@ class XDAMod(loader.Module):
 
     def __init__(self):
         self.config = loader.ModuleConfig("XDA_RANDOM_WORDS", RANDOM_WORDS, "Random words from XDA as dict & weight")
-        self.name = self.strings["name"]
 
     async def xdacmd(self, message):
         """Send random XDA posts"""

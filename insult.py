@@ -32,9 +32,6 @@ class InsultMod(loader.Module):
     """Shouts at people"""
     strings = {"name": "Insulter"}
 
-    def __init__(self):
-        self.name = self.strings["name"]
-
     async def insultcmd(self, message):
         """Use when angry"""
         # TODO localisation?

@@ -57,19 +57,18 @@ class WeatherMod(loader.Module):
                "unknown": "unknown"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, lambda: self.strings["doc_default_loc"],
-                                          "API_KEY", None, lambda: self.strings["doc_api_key"],
-                                          "TEMP_UNITS", "celsius", lambda: self.strings["doc_temp_units"])
+        self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, lambda m: self.strings("doc_default_loc", m),
+                                          "API_KEY", None, lambda m: self.strings("doc_api_key", m),
+                                          "TEMP_UNITS", "celsius", lambda m: self.strings("doc_temp_units", m))
         self._owm = None
 
     def config_complete(self):
         self._owm = pyowm.OWM(self.config["API_KEY"])
-        self.name = self.strings["name"]
 
     async def weathercmd(self, message):
         """.weather [location]"""
         if self.config["API_KEY"] is None:
-            await utils.answer(message, self.strings["provide_api"])
+            await utils.answer(message, self.strings("provide_api", message))
             return
         args = utils.get_args_raw(message)
         func = None
@@ -99,13 +98,13 @@ class WeatherMod(loader.Module):
             weather = w.get_weather()
             temp = weather.get_temperature(self.config["TEMP_UNITS"])
         except ValueError:
-            await utils.answer(message, self.strings["invalid_temp_units"])
+            await utils.answer(message, self.strings("invalid_temp_units", message))
             return
-        ret = self.strings["result"].format(loc=eh(w.get_location().get_name()),
-                                            w=eh(w.get_weather().get_detailed_status().lower()),
-                                            high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
-                                            humid=eh(weather.get_humidity()),
-                                            ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
-                                            wd=eh(deg_to_text(weather.get_wind().get("deg", None))
-                                                  or self.strings["unknown"]))
+        ret = self.strings("result", message).format(loc=eh(w.get_location().get_name()),
+                                                     w=eh(w.get_weather().get_detailed_status().lower()),
+                                                     high=eh(temp["temp_max"]), low=eh(temp["temp_min"]),
+                                                     avg=eh(temp["temp"]), humid=eh(weather.get_humidity()),
+                                                     ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
+                                                     wd=eh(deg_to_text(weather.get_wind().get("deg", None))
+                                                           or self.strings("unknown", message)))
         await utils.answer(message, ret)

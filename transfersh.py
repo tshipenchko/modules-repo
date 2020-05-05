@@ -45,8 +45,8 @@ class TransferShMod(loader.Module):
                "uploaded": "<a href={}>Uploaded!</a>"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("UPLOAD_URL", "https://transfer.sh/{}", lambda: self.strings["up_cfg_doc"])
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("UPLOAD_URL", "https://transfer.sh/{}",
+                                          lambda m: self.strings("up_cfg_doc", m))
 
     async def uploadshcmd(self, message):
         """Uploads to transfer.sh"""
@@ -56,14 +56,14 @@ class TransferShMod(loader.Module):
             msg = (await message.get_reply_message())
         doc = msg.media
         if doc is None:
-            await utils.answer(message, self.strings["file_plox"])
+            await utils.answer(message, self.strings("file_plox", message))
             return
         doc = message.client.iter_download(doc)
         logger.debug("begin transfer")
-        await utils.answer(message, self.strings["uploading"])
+        await utils.answer(message, self.strings("uploading", message))
         r = await utils.run_sync(requests.put, self.config["UPLOAD_URL"].format(msg.file.name),
                                  data=sgen(doc, asyncio.get_event_loop()))
         logger.debug(r)
         r.raise_for_status()
         logger.debug(r.headers)
-        await utils.answer(message, self.strings["uploaded"].format(r.text))
+        await utils.answer(message, self.strings("uploaded", message).format(r.text))

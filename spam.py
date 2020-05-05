@@ -35,22 +35,19 @@ class SpamMod(loader.Module):
                "nice_number": "<b>Nice number bro.</b>",
                "much_spam": "<b>Haha, much spam.</b>"}
 
-    def __init__(self):
-        self.name = self.strings["name"]
-
     async def spamcmd(self, message):
         """.spam <count> <message>"""
         use_reply = False
         args = utils.get_args(message)
         logger.debug(args)
         if len(args) == 0:
-            await utils.answer(message, self.strings["need_spam"])
+            await utils.answer(message, self.strings("need_spam", message))
             return
         if len(args) == 1:
             if message.is_reply:
                 use_reply = True
             else:
-                await utils.answer(message, self.strings["spam_urself"])
+                await utils.answer(message, self.strings("spam_urself", message))
                 return
         count = args[0]
         spam = (await message.get_reply_message()) if use_reply else message
@@ -58,10 +55,10 @@ class SpamMod(loader.Module):
         try:
             count = int(count)
         except ValueError:
-            await utils.answer(message, self.strings["nice_number"])
+            await utils.answer(message, self.strings("nice_number", message))
             return
         if count < 1:
-            await utils.answer(message, self.strings["much_spam"])
+            await utils.answer(message, self.strings("much_spam", message))
             return
         await message.delete()
         if count > 20:

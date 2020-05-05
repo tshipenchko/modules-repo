@@ -54,12 +54,9 @@ class AntiPMMod(loader.Module):
                              "\n\nPS: you've been reported as spam already.")}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("PM_BLOCK_LIMIT", None, lambda: self.strings["limit_cfg_doc"])
+        self.config = loader.ModuleConfig("PM_BLOCK_LIMIT", None, lambda m: self.strings("limit_cfg_doc", m))
         self._me = None
         self._ratelimit = []
-
-    def config_complete(self):
-        self.name = self.strings["name"]
 
     async def client_ready(self, client, db):
         self._db = db
@@ -70,34 +67,34 @@ class AntiPMMod(loader.Module):
         """Block this user to PM without being warned"""
         user = await utils.get_target(message)
         if not user:
-            await utils.answer(message, self.strings["who_to_block"])
+            await utils.answer(message, self.strings("who_to_block", message))
             return
         await message.client(functions.contacts.BlockRequest(user))
-        await utils.answer(message, self.strings["blocked"].format(user))
+        await utils.answer(message, self.strings("blocked", message).format(user))
 
     async def unblockcmd(self, message):
         """Unblock this user to PM"""
         user = await utils.get_target(message)
         if not user:
-            await utils.answer(message, self.strings["who_to_unblock"])
+            await utils.answer(message, self.strings("who_to_unblock", message))
             return
         await message.client(functions.contacts.UnblockRequest(user))
-        await utils.answer(message, self.strings["unblocked"].format(user))
+        await utils.answer(message, self.strings("unblocked", message).format(user))
 
     async def allowcmd(self, message):
         """Allow this user to PM"""
         user = await utils.get_target(message)
         if not user:
-            await utils.answer(message, self.strings["who_to_allow"])
+            await utils.answer(message, self.strings("who_to_allow", message))
             return
         self._db.set(__name__, "allow", list(set(self._db.get(__name__, "allow", [])).union({user})))
-        await utils.answer(message, self.strings["allowed"].format(user))
+        await utils.answer(message, self.strings("allowed", message).format(user))
 
     async def reportcmd(self, message):
         """Report the user spam. Use only in PM"""
         user = await utils.get_target(message)
         if not user:
-            await utils.answer(message, self.strings["who_to_report"])
+            await utils.answer(message, self.strings("who_to_report", message))
             return
         self._db.set(__name__, "allow", list(set(self._db.get(__name__, "allow", [])).difference({user})))
         if message.is_reply and isinstance(message.to_id, types.PeerChannel):
@@ -107,26 +104,26 @@ class AntiPMMod(loader.Module):
                                                                   reason=types.InputReportReasonSpam()))
         else:
             await message.client(functions.messages.ReportSpamRequest(peer=message.to_id))
-        await utils.answer(message, self.strings["reported"])
+        await utils.answer(message, self.strings("reported", message))
 
     async def denycmd(self, message):
         """Deny this user to PM without being warned"""
         user = await utils.get_target(message)
         if not user:
-            await utils.answer(message, self.strings["who_to_deny"])
+            await utils.answer(message, self.strings("who_to_deny", message))
             return
         self._db.set(__name__, "allow", list(set(self._db.get(__name__, "allow", [])).difference({user})))
-        await utils.answer(message, self.strings["denied"].format(user))
+        await utils.answer(message, self.strings("denied", message).format(user))
 
     async def notifoffcmd(self, message):
         """Disable the notifications from denied PMs"""
         self._db.set(__name__, "notif", True)
-        await utils.answer(message, self.strings["notif_off"])
+        await utils.answer(message, self.strings("notif_off", message))
 
     async def notifoncmd(self, message):
         """Enable the notifications from denied PMs"""
         self._db.set(__name__, "notif", False)
-        await utils.answer(message, self.strings["notif_on"])
+        await utils.answer(message, self.strings("notif_on", message))
 
     async def watcher(self, message):
         if getattr(message.to_id, "user_id", None) == self._me.user_id:
@@ -143,11 +140,11 @@ class AntiPMMod(loader.Module):
             if self.get_allowed(message.from_id):
                 logger.debug("Authorised pm detected")
             else:
-                await utils.answer(message, self.strings["go_away"])
+                await utils.answer(message, self.strings("go_away", message))
                 if isinstance(self.config["PM_BLOCK_LIMIT"], int):
                     limit = self._db.get(__name__, "limit", {})
                     if limit.get(message.from_id, 0) >= self.config["PM_BLOCK_LIMIT"]:
-                        await utils.answer(message, self.strings["triggered"])
+                        await utils.answer(message, self.strings("triggered", message))
                         await message.client(functions.contacts.BlockRequest(message.from_id))
                         await message.client(functions.messages.ReportSpamRequest(peer=message.from_id))
                         del limit[message.from_id]

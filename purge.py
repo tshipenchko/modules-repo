@@ -31,13 +31,10 @@ class PurgeMod(loader.Module):
     strings = {"name": "Purge",
                "from_where": "From where shall I purge?"}
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
     async def purgecmd(self, message):
         """Purge from the replied message"""
         if not message.is_reply:
-            await message.edit(self.strings["from_where"])
+            await utils.answer(message, self.strings("from_where", message))
             return
 
         from_users = set()
