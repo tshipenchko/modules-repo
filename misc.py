@@ -68,6 +68,9 @@ class MiscMod(loader.Module):
                          "/BLUE /TEXT\n/MUST /CLICK\n/I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS",
                          "Blue text must click!11!!1!1")
 
+    def config_complete(self):
+        self.name = self.strings["name"]
+
     async def voltecmd(self, message):
         """Use when the bholit just won't work"""
         await utils.answer(message, self.config["VOLTE_TEXT"])
