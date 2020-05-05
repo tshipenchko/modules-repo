@@ -27,8 +27,11 @@ def register(cb):
     cb(MiscMod())
 
 
+@loader.tds
 class MiscMod(loader.Module):
     """Miscellaneous tasks"""
+    strings = {"name": "Miscellaneous"}
+
     def __init__(self):
         self.config = mc("VOLTE_TEXT", "To be fair, you have to have a very high IQ to understand VoLTE. "
                          + "The technology is extremely subtle, and without a solid grasp of cell towers most "
@@ -64,35 +67,34 @@ class MiscMod(loader.Module):
                          "", "F_LENGTHS", [5, 1, 1, 4, 1, 1, 1], "List to customise size of F shape", "BLUE_TEXT",
                          "/BLUE /TEXT\n/MUST /CLICK\n/I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS",
                          "Blue text must click!11!!1!1")
-        self.name = _("Miscellaneous")
 
     async def voltecmd(self, message):
         """Use when the bholit just won't work"""
-        await message.edit(self.config["VOLTE_TEXT"])
+        await utils.answer(message, self.config["VOLTE_TEXT"])
 
     async def fcmd(self, message):
         """Pays respects"""
         args = utils.get_args_raw(message)
-        if len(args) == 0:
+        if not args:
             r = random.randint(0, 3)
             logger.debug(r)
             if r == 0:
-                await message.edit("┏━━━┓\n┃┏━━┛\n┃┗━━┓\n┃┏━━┛\n┃┃\n┗┛")
+                await utils.answer(message, "┏━━━┓\n┃┏━━┛\n┃┗━━┓\n┃┏━━┛\n┃┃\n┗┛")
             elif r == 1:
-                await message.edit("╭━━━╮\n┃╭━━╯\n┃╰━━╮\n┃╭━━╯\n┃┃\n╰╯")
+                await utils.answer(message, "╭━━━╮\n┃╭━━╯\n┃╰━━╮\n┃╭━━╯\n┃┃\n╰╯")
             else:
                 args = "F"
-        if len(args) > 0:
+        if args:
             out = ""
             for line in self.config["F_LENGTHS"]:
                 c = max(round(line / len(args)), 1)
                 out += (args * c) + "\n"
-            await message.edit("<code>" + utils.escape_html(out) + "</code>")
+            await utils.answer(message, "<code>" + utils.escape_html(out) + "</code>")
 
     async def huaweicmd(self, message):
         """Use when your country is "investing" in Huawei 5G modems"""
-        await message.edit(self.config["HUAWEI_TEXT"])
+        await utils.answer(message, self.config["HUAWEI_TEXT"])
 
     async def btcmd(self, message):
         """Blue text must click"""
-        await message.edit(self.config["BLUE_TEXT"])
+        await utils.answer(message, self.config["BLUE_TEXT"])

@@ -33,7 +33,7 @@ def register(cb):
 
 def deg_to_text(deg):
     if deg is None:
-        return _("unknown")
+        return None
     return ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW",
             "SW", "WSW", "W", "WNW", "NW", "NNW"][round(deg / 22.5) % 16]
 
@@ -53,7 +53,8 @@ class WeatherMod(loader.Module):
                "doc_api_key": "API Key from https://openweathermap.org/appid",
                "doc_temp_units": "Temperature unit as English",
                "result": "<b>Weather in {loc} is {w} with a high of {high} and a low"
-                         " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>"}
+                         " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>",
+               "unknown": "unknown"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("DEFAULT_LOCATION", None, lambda: self.strings["doc_default_loc"],
@@ -93,7 +94,7 @@ class WeatherMod(loader.Module):
         logger.debug(func)
         logger.debug(args)
         w = await utils.run_sync(func, *args)
-        logger.debug(_("Weather at {args} is {w}").format(args=args, w=w))
+        logger.debug("Weather at %r is %r", args, w)
         try:
             weather = w.get_weather()
             temp = weather.get_temperature(self.config["TEMP_UNITS"])
@@ -105,5 +106,6 @@ class WeatherMod(loader.Module):
                                             high=eh(temp["temp_max"]), low=eh(temp["temp_min"]), avg=eh(temp["temp"]),
                                             humid=eh(weather.get_humidity()),
                                             ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
-                                            wd=eh(deg_to_text(weather.get_wind().get("deg", None))))
+                                            wd=eh(deg_to_text(weather.get_wind().get("deg", None))
+                                                  or self.strings["unknown"]))
         await utils.answer(message, ret)

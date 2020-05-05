@@ -40,23 +40,43 @@ def register(cb):
     cb(StickersMod())
 
 
+@loader.tds
 class StickersMod(loader.Module):
     """Tasks with stickers"""
+    strings = {"name": "Stickers",
+               "stickers_username_cfg_doc": "Bot to use to create stickers",
+               "sticker_size_cfg_doc": "The size of one sticker",
+               "default_sticker_emoji_cfg_doc": "The emoji to use for stickers by default",
+               "what_pack": "<b>You must specify which pack you would like to add the sticker to</b>",
+               "what_photo": "<b>Reply to a sticker or photo to add it to your sticker pack</b>",
+               "not_animated_pack": "<b>Animated stickers can only be added to animated packs</b>",
+               "internal_error": "<b>Something went wrong while adding the sticker</b>",
+               "bad_emojis": "<b>The emoji(s) you gave are invalid</b>",
+               "animated_pack": "<b>Non-animated stickers cannot be added to animated packs</b>",
+               "new_pack": "<b>Create a sticker pack first</b>",
+               "pack_full": "<b>That pack is full. Delete some stickers or try making a new pack</b>",
+               "added": "<b>Sticker added to</b> <a href='{}'>pack</a><b>!</b>",
+               "bad_animated_sticker": "<b>Reply to an animated sticker to convert to a GIF</b>"}
+
     def __init__(self):
-        self.config = loader.ModuleConfig("STICKERS_USERNAME", "Stickers", "Bot username to create stickers via",
-                                          "STICKER_SIZE", (512, 512), "The size of one sticker",
-                                          "DEFAULT_STICKER_EMOJI", u"🤔", "The emoji to use for stickers by default")
-        self.name = _("Stickers")
+        self.config = loader.ModuleConfig("STICKERS_USERNAME", "Stickers",
+                                          lambda: self.strings["stickers_username_cfg_doc"],
+                                          "STICKER_SIZE", (512, 512), lambda: self.strings["sticker_size_cfg_doc"],
+                                          "DEFAULT_STICKER_EMOJI", u"🤔",
+                                          lambda: self.strings["default_sticker_emoji_cfg_doc"])
         self._lock = asyncio.Lock()
 
-    async def kangcmd(self, message):  # noqa: C901 # TODO: reduce complexity a LOT
+    def config_complete(self):
+        self.name = self.strings["name"]
+
+    async def kangcmd(self, message):  # noqa: C901 # TODO: split this into helpers
         """Use in reply or with an attached media:
            .kang <pack name> [emojis]
            If pack is not matched the most recently created will be used instead"""
         args = utils.get_args(message)
-        if len(args) != 1 and len(args) != 2:
+        if len(args) not in (1, 2):
             logger.debug("wrong args len(%s) or bad args(%s)", len(args), args)
-            await message.edit(_("Provide a pack name and optionally emojis too"))
+            await message.edit(self.strings["what_pack"])
             return
 
         if not message.is_reply:
@@ -71,7 +91,7 @@ class StickersMod(loader.Module):
         else:
             sticker = await message.get_reply_message()
         if not (sticker.sticker or sticker.photo):
-            await message.edit(_("Reply to a sticker or photo to nick it"))
+            await message.edit(self.strings["what_photo"])
             return
         logger.debug("user did send photo/sticker")
         if len(args) > 1:
@@ -111,7 +131,7 @@ class StickersMod(loader.Module):
                         if ".PSD" in r0.message:
                             logger.error("bad response from stickerbot 0")
                             logger.error(r0)
-                            await message.edit(_("<code>That isn't an animated sticker pack</code>"))
+                            await message.edit(self.strings["not_animated_pack"])
                             msgs = []
                             async for msg in message.client.iter_messages(entity="t.me/"
                                                                           + self.config["STICKERS_USERNAME"],
@@ -135,7 +155,7 @@ class StickersMod(loader.Module):
                             logger.error(r0)
                             logger.error(r1)
                             logger.error(r2)
-                            await message.edit(_("<code>Something went wrong internally!</code>"))
+                            await message.edit(self.strings["internal_error"])
                             return
                     msgs = []
                     async for msg in message.client.iter_messages(entity="t.me/" + self.config["STICKERS_USERNAME"],
@@ -148,7 +168,7 @@ class StickersMod(loader.Module):
                     # The emoji(s) are invalid.
                     logger.error("Bad response from StickerBot 2")
                     logger.error(r2)
-                    await message.edit(_("<code>Please provide valid emoji(s).</code>"))
+                    await message.edit(self.strings["bad_emojis"])
                     return
 
             else:
@@ -175,13 +195,13 @@ class StickersMod(loader.Module):
                                 button = click_buttons(buttons, args[0])
                                 m0 = await button.click()
                             elif "/newpack" in r0.message:
-                                await message.edit("<code>Please create a pack first</code>")
+                                await message.edit(self.strings["new_pack"])
                                 return
                             else:
                                 logger.warning("there's no buttons!")
                                 m0 = await message.client.send_message("t.me/" + self.config["STICKERS_USERNAME"],
                                                                        "/cancel")
-                                await message.edit("<code>Something went wrong</code>")
+                                await message.edit(self.strings["internal_error"])
                                 return
                             # We have sent the pack we wish to modify.
                             # Upload sticker
@@ -189,7 +209,7 @@ class StickersMod(loader.Module):
                             if ".TGS" in r0.message:
                                 logger.error("bad response from stickerbot 0")
                                 logger.error(r0)
-                                await message.edit(_("<code>That's an animated pack</code>"))
+                                await message.edit(self.strings["animated_pack"])
                                 msgs = []
                                 async for msg in message.client.iter_messages(entity="t.me/"
                                                                               + self.config["STICKERS_USERNAME"],
@@ -203,8 +223,7 @@ class StickersMod(loader.Module):
                             if "120" in r0.message:
                                 logger.error("bad response from stickerbot 0")
                                 logger.error(r0)
-                                await message.edit(_("<code>That pack is full. Delete some stickers or try making a "
-                                                     "new pack.</code>"))
+                                await message.edit(self.strings["pack_full"])
                                 msgs = []
                                 async for msg in message.client.iter_messages(entity="t.me/"
                                                                               + self.config["STICKERS_USERNAME"],
@@ -228,14 +247,14 @@ class StickersMod(loader.Module):
                                 logger.error(r1)
                                 logger.error(r2)
                                 logger.error("Bad response from StickerBot 0")
-                                await message.edit(_("<code>Something went wrong internally</code>"))
+                                await message.edit(self.strings["internal_error"])
                             await message.client.send_read_acknowledge(conv.chat_id)
                             if "/done" not in r2.message:
                                 # That's an error
                                 logger.error("Bad response from StickerBot 1")
                                 logger.error(r1)
                                 logger.error(r2)
-                                await message.edit(_("<code>Something went wrong internally!</code>"))
+                                await message.edit(self.strings["internal_error"])
                                 return
                             msgs = []
                             async for msg in message.client.iter_messages(entity="t.me/"
@@ -249,14 +268,14 @@ class StickersMod(loader.Module):
                             # The emoji(s) are invalid.
                             logger.error("Bad response from StickerBot 2")
                             logger.error(r2)
-                            await message.edit(_("<code>Please provide valid emoji(s).</code>"))
+                            await message.edit(self.strings["bad_emojis"])
                             return
                 finally:
                     thumb.close()
         finally:
             img.close()
         packurl = utils.escape_html("https://t.me/addstickers/{}".format(button.text))
-        await message.edit(_("<code>Sticker added to</code> <a href='{}'>pack</a><code>!</code>").format(packurl))
+        await message.edit(self.strings["added"].format(packurl))
 
     async def gififycmd(self, message):
         """Convert the replied animated sticker to a GIF"""
@@ -273,7 +292,7 @@ class StickersMod(loader.Module):
             logger.exception("Failed to parse quality/fps")
         target = await message.get_reply_message()
         if target is None or target.file is None or target.file.mime_type != "application/x-tgsticker":
-            await utils.answer(message, _("<code>Please provide an animated sticker to convert to a GIF</code>"))
+            await utils.answer(message, self.strings["bad_animated_sticker"])
             return
         try:
             file = BytesIO()

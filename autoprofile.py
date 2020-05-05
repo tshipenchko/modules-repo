@@ -216,20 +216,17 @@ class AutoProfileMod(loader.Module):
         args = utils.get_args(message)
         if not args:
             return await utils.answer(message, self.strings["how_many_pfps"])
-        if args[0].lower() == "unlimited":
+        try:
+            pfps_count = int(args[0])
+        except ValueError:
+            return await utils.answer(message, self.strings["invalid_pfp_count"])
+        if pfps_count < 0:
+            return await utils.answer(message, self.strings["invalid_pfp_count"])
+        if pfps_count == 0:
             pfps_count = None
-        else:
-            try:
-                pfps_count = int(args[0])
-            except ValueError:
-                return await utils.answer(message, self.strings["invalid_pfp_count"])
-            if pfps_count <= 0:
-                return await utils.answer(message, self.strings["invalid_pfp_count"])
 
-        await self.client(functions.photos.DeletePhotosRequest(await self.client.get_profile_photos("me",
-                                                                                                    limit=pfps_count)))
+        to_delete = await self.client.get_profile_photos("me", limit=pfps_count)
+        await self.client(functions.photos.DeletePhotosRequest(to_delete))
 
-        if pfps_count is None:
-            pfps_count = _("all")
         await self.allmodules.log("delpfp")
-        await utils.answer(message, self.strings["removed_pfps"].format(str(pfps_count)))
+        await utils.answer(message, self.strings["removed_pfps"].format(len(to_delete)))
