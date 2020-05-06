@@ -163,7 +163,7 @@ async def sleep_for_task(func, data, delay):
 
 class MessageEditor:
     def __init__(self, message, command, config, strings, request_message):
-        self.message = message
+        self.message = [message]
         self.command = command
         self.stdout = ""
         self.stderr = ""
@@ -241,7 +241,7 @@ class SudoMessageEditor(MessageEditor):
             await self.authmsg.delete()
         if lastlines[0] == self.PASS_REQ and self.state == 0:
             logger.debug("Success to find sudo log!")
-            text = self.strings("auth_needed", self.request_message).format((await self.message.client.get_me()).id)
+            text = self.strings("auth_needed", self.request_message).format((await self.message[0].client.get_me()).id)
             try:
                 await utils.answer(self.message, text)
             except telethon.errors.rpcerrorlist.MessageNotModifiedError as e:
@@ -249,14 +249,14 @@ class SudoMessageEditor(MessageEditor):
             logger.debug("edited message with link to self")
             command = "<code>" + utils.escape_html(self.command) + "</code>"
             user = utils.escape_html(lastlines[1][:-1])
-            self.authmsg = await self.message.client.send_message("me",
-                                                                  self.strings("auth_msg",
-                                                                               self.request_message).format(command,
-                                                                                                            user))
+            self.authmsg = await self.message.client[0].send_message("me",
+                                                                     self.strings("auth_msg",
+                                                                                  self.request_message).format(command,
+                                                                                                               user))
             logger.debug("sent message to self")
-            self.message.client.remove_event_handler(self.on_message_edited)
-            self.message.client.add_event_handler(self.on_message_edited,
-                                                  telethon.events.messageedited.MessageEdited(chats=["me"]))
+            self.message[0].client.remove_event_handler(self.on_message_edited)
+            self.message[0].client.add_event_handler(self.on_message_edited,
+                                                     telethon.events.messageedited.MessageEdited(chats=["me"]))
             logger.debug("registered handler")
             handled = True
         if len(lines) > 1 and (re.fullmatch(self.TOO_MANY_TRIES, lastline)
