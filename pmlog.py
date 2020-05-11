@@ -50,7 +50,7 @@ class PMLogMod(loader.Module):
             await utils.answer(message, self.strings("not_pm", message))
             return
         self._db.set(__name__, "users",
-                     list(set(self._db.get(__name__, "users", [])).difference(message.to_id.user_id)))
+                     list(set(self._db.get(__name__, "users", [])).difference([message.to_id.user_id])))
         await utils.answer(message, self.strings("start", message))
 
     async def watcher(self, message):
