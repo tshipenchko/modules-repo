@@ -20,18 +20,15 @@ import aiohttp
 from .. import loader, utils
 
 
-def register(cb):
-    cb(OrangeFoxMod())
-
-
 @loader.tds
 class OrangeFoxMod(loader.Module):
     """Integration with the OrangeFox Recovery API to fetch supported devices"""
 
     strings = {"name": "OrangeFox Recovery",
                "api_host_cfg_doc": "The API endpoint to query for device information",
-               "list_devices_stable_header": "<b>List of supported devices with stable releases:</b>",
+               "list_devices": "<b>List of supported devices:</b>",
                "no_such_device": "<b>No such device is found!</b>",
+               "no_stable_release": "<b>No stable release was found for this device!</b>",
                "header_stable": "<b>Latest OrangeFox Recovery stable release</b>",
                "device_info": "\n<b>Device:</b> {} (<code>{}</code>)",
                "version": "\n<b>Version:</b> <code>{}</code>",
@@ -46,59 +43,58 @@ class OrangeFoxMod(loader.Module):
                "mirror_link_text": "Mirror"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("API_HOST", "https://api.orangefox.tech/",
-                                          lambda: self.strings["api_host_cfg_doc"])
+        self.config = loader.ModuleConfig("API_HOST", "https://api.orangefox.download/v2",
+                                          lambda m: self.strings("api_host_cfg_doc", m))
         self.session = aiohttp.ClientSession()
-
-    def config_complete(self):
-        self.name = self.strings["name"]
 
     async def ofoxcmd(self, message):
         """Get's last OrangeFox releases"""
         args = utils.get_args(message)
-        devices = await self._send_request("list_devices")
         if args:
             codename = args[0].lower()
-            if codename not in [a["codename"] for a in devices]:
-                await utils.answer(message, self.strings["no_such_device"])
+            device = await self._send_request("device/" + codename)
+            if not device:
+                await utils.answer(message, self.strings("no_such_device", message))
                 return
 
-            release = await self._send_request("last_stable_release", codename)
-            device = await self._send_request("details", codename)
+            release = await self._send_request(f"device/{codename}/releases/stable/last")
+            if not release:
+                await utils.answer(message, self.strings("no_stable_release", message))
+                return
 
-            text = self.strings["header_stable"]
-            text += self.strings["device_info"].format(device["fullname"], device["codename"])
-            text += self.strings["version"].format(release["version"])
-            text += self.strings["release_date"].format(release["date"])
-            text += self.strings["version"].format(release["version"])
+            text = self.strings("header_stable", message)
+            text += self.strings("device_info", message).format(device["fullname"], device["codename"])
+            text += self.strings("version", message).format(release["version"])
+            text += self.strings("release_date", message).format(release["date"])
+            text += self.strings("version", message).format(release["version"])
 
             if device["maintained"] in (1, 2, 3):
-                text += self.strings["maintained_" + str(device["maintained"])].format(device["maintainer"])
+                text += self.strings["maintained_" + str(device["maintained"])].format(device["maintainer"]["name"])
 
-            text += self.strings["file"].format(release["file_name"], release["size_human"])
-            text += self.strings["file_md5"].format(release["md5"])
+            text += self.strings("file", message).format(release["file_name"], release["size_human"])
+            text += self.strings("file_md5", message).format(release["md5"])
 
             if "notes" in release:
-                text += self.strings["build_notes"]
+                text += self.strings("build_notes", message)
                 text += release["notes"]
 
-            text += "\n<a href=\"{}\">{}</a>".format(release["url"], self.strings["download_link_text"])
+            text += "\n<a href=\"{}\">{}</a>".format(release["url"], self.strings("download_link_text", message))
             if "sf" in release:
-                text += " | <a href=\"{}\">{}</a>".format(release["sf"]["url"], self.strings["mirror_link_text"])
+                text += " | <a href=\"{}\">{}</a>".format(release["sf"]["url"],
+                                                          self.strings("mirror_link_text", message))
 
             await utils.answer(message, text)
         else:
-            text = self.strings["list_devices_stable_header"]
-            codenames = await self._send_request("available_stable_releases")
+            text = self.strings("list_devices", message)
+            devices = await self._send_request("device")
 
             for device in devices:
-                if device["codename"] not in codenames:
-                    continue
-
                 text += "\n- {} (<code>{}</code>)".format(device["fullname"], device["codename"])
 
             await utils.answer(message, text)
 
     async def _send_request(self, *endpoint):
         async with self.session.get(self.config["API_HOST"] + "/" + ("/".join(endpoint))) as response:
+            if response.status == 404:
+                return False
             return await response.json()

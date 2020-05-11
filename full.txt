@@ -15,6 +15,7 @@ memes
 nopm
 notes
 orangefox
+pmlog
 purge
 quicktype
 quotes

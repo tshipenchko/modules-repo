@@ -21,10 +21,6 @@ import random
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(BEmojiMod())
-
-
 @loader.tds
 class BEmojiMod(loader.Module):
     """🅱️-ifies things"""
@@ -35,9 +31,7 @@ class BEmojiMod(loader.Module):
     def __init__(self):
         self.config = loader.ModuleConfig("REPLACABLE_CHARS", "bdfgpv", "Characters that can be replaced with 🅱️")
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
+    @loader.unrestricted
     async def bcmd(self, message):
         """Use in reply to another message or as .b <text>"""
         if message.is_reply:
@@ -45,7 +39,7 @@ class BEmojiMod(loader.Module):
         else:
             text = utils.get_args_raw(message.message)
         if text is None or len(text) == 0:
-            await message.edit(self.strings["no_text"])
+            await utils.answer(message, self.strings("no_text", message))
             return
         text = list(text)
         n = 0

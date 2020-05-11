@@ -18,10 +18,6 @@ from .. import loader, utils
 import random
 
 
-def register(cb):
-    cb(XDAMod())
-
-
 RANDOM_WORDS = {"sur": 6, "Sir": 6, "bro": 6, "yes": 5, "no": 5, "bolte": 2, "bolit": 2, "bholit": 3, "volit": 3,
                 "mustah": 4, "fap": 5, "lit": 3, "lmao": 6, "iz": 7, "jiosim": 8, "ijo": 4, "nut": 7, "workz": 4,
                 "workang": 4, "flashabl zip": 6, "bateri": 6, "bacup": 6, "bad englis": 5, "sar": 5, "treble wen": 2,
@@ -40,8 +36,8 @@ class XDAMod(loader.Module):
 
     def __init__(self):
         self.config = loader.ModuleConfig("XDA_RANDOM_WORDS", RANDOM_WORDS, "Random words from XDA as dict & weight")
-        self.name = self.strings["name"]
 
+    @loader.unrestricted
     async def xdacmd(self, message):
         """Send random XDA posts"""
         length = random.randint(3, 10)

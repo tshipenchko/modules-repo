@@ -29,10 +29,6 @@ from io import BytesIO
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(QuotesMod())
-
-
 @loader.tds
 class QuotesMod(loader.Module):
     """Quote a message."""
@@ -59,21 +55,20 @@ class QuotesMod(loader.Module):
     }
 
     def __init__(self):
-        self.config = loader.ModuleConfig("api_token", None, lambda: self.strings["api_token_cfg_doc"],
+        self.config = loader.ModuleConfig("api_token", None, lambda m: self.strings("api_token_cfg_doc", m),
                                           "api_url", "http://api.antiddos.systems",
-                                          lambda: self.strings["api_url_cfg_doc"],
+                                          lambda m: self.strings("api_url_cfg_doc", m),
                                           "username_colors", ["#fb6169", "#faa357", "#b48bf2", "#85de85",
                                                               "#62d4e3", "#65bdf3", "#ff5694"],
-                                          lambda: self.strings["colors_cfg_doc"],
+                                          lambda m: self.strings("colors_cfg_doc", m),
                                           "default_username_color", "#b48bf2",
-                                          lambda: self.strings["default_username_color_cfg_doc"])
-
-    def config_complete(self):
-        self.name = self.strings["name"]
+                                          lambda m: self.strings("default_username_color_cfg_doc", m))
 
     async def client_ready(self, client, db):
         self.client = client
 
+    @loader.unrestricted
+    @loader.ratelimit
     async def quotecmd(self, message):  # noqa: C901
         """Quote a message.
         Usage: .quote [template] [file/force_file]
@@ -83,7 +78,7 @@ class QuotesMod(loader.Module):
         reply = await message.get_reply_message()
 
         if not reply:
-            return await utils.answer(message, self.strings["no_reply"])
+            return await utils.answer(message, self.strings("no_reply", message))
 
         username_color = username = admintitle = user_id = None
         profile_photo_url = reply.from_id
@@ -97,9 +92,9 @@ class QuotesMod(loader.Module):
             participants = chat.full_chat.participants.participants
             participant = next(filter(lambda x: x.user_id == reply.from_id, participants), None)
             if isinstance(participant, telethon.tl.types.ChatParticipantCreator):
-                admintitle = self.strings["creator"]
+                admintitle = self.strings("creator", message)
             elif isinstance(participant, telethon.tl.types.ChatParticipantAdmin):
-                admintitle = self.strings["admin"]
+                admintitle = self.strings("admin", message)
             user = await reply.get_sender()
         else:
             user = await reply.get_sender()
@@ -112,7 +107,7 @@ class QuotesMod(loader.Module):
         if reply.fwd_from:
             if reply.fwd_from.saved_from_peer:
                 profile_photo_url = reply.forward.chat
-                admintitle = self.strings["channel"]
+                admintitle = self.strings("channel", message)
             elif reply.fwd_from.from_name:
                 username = reply.fwd_from.from_name
                 profile_photo_url = None
@@ -122,7 +117,7 @@ class QuotesMod(loader.Module):
                 profile_photo_url = reply.forward.sender.id
                 admintitle = ""
             elif reply.forward.chat:
-                admintitle = self.strings["channel"]
+                admintitle = self.strings("channel", message)
                 profile_photo_url = user
         else:
             if isinstance(reply.to_id, telethon.tl.types.PeerUser) is False:
@@ -130,9 +125,9 @@ class QuotesMod(loader.Module):
                     user = await self.client(telethon.tl.functions.channels.GetParticipantRequest(message.chat_id,
                                                                                                   user))
                     if isinstance(user.participant, telethon.tl.types.ChannelParticipantCreator):
-                        admintitle = user.participant.rank or self.strings["creator"]
+                        admintitle = user.participant.rank or self.strings("creator", message)
                     elif isinstance(user.participant, telethon.tl.types.ChannelParticipantAdmin):
-                        admintitle = user.participant.rank or self.strings["admin"]
+                        admintitle = user.participant.rank or self.strings("admin", message)
                     user = user.users[0]
                 except telethon.errors.rpcerrorlist.UserNotParticipantError:
                     pass
@@ -199,15 +194,15 @@ class QuotesMod(loader.Module):
         resp = await utils.run_sync(resp.json)
 
         if resp["status"] == 500:
-            return await utils.answer(message, self.strings["server_error"])
+            return await utils.answer(message, self.strings("server_error", message))
         elif resp["status"] == 401:
             if resp["message"] == "ERROR_TOKEN_INVALID":
-                return await utils.answer(message, self.strings["invalid_token"])
+                return await utils.answer(message, self.strings("invalid_token", message))
             else:
                 raise ValueError("Invalid response from server", resp)
         elif resp["status"] == 403:
             if resp["message"] == "ERROR_UNAUTHORIZED":
-                return await utils.answer(message, self.strings["unauthorized"])
+                return await utils.answer(message, self.strings("unauthorized", message))
             else:
                 raise ValueError("Invalid response from server", resp)
         elif resp["status"] == 404:
@@ -218,12 +213,12 @@ class QuotesMod(loader.Module):
                 newreq = await utils.run_sync(newreq.json)
 
                 if newreq["status"] == "NOT_ENOUGH_PERMISSIONS":
-                    return await utils.answer(message, self.strings["not_enough_permissions"])
+                    return await utils.answer(message, self.strings("not_enough_permissions", message))
                 elif newreq["status"] == "SUCCESS":
-                    templates = self.strings["delimiter"].join(newreq["message"])
-                    return await utils.answer(message, self.strings["templates"].format(templates))
+                    templates = self.strings("delimiter", message).join(newreq["message"])
+                    return await utils.answer(message, self.strings("templates", message).format(templates))
                 elif newreq["status"] == "INVALID_TOKEN":
-                    return await utils.answer(message, self.strings["invalid_token"])
+                    return await utils.answer(message, self.strings("invalid_token", message))
                 else:
                     raise ValueError("Invalid response from server", newreq)
             else:
@@ -240,7 +235,7 @@ class QuotesMod(loader.Module):
             if args[1] == "file":
                 await utils.answer(message, file)
             elif args[1] == "force_file":
-                file.name = self.strings["filename"]
+                file.name = self.strings("filename", message)
                 await utils.answer(message, file, force_document=True)
         else:
             img = await utils.run_sync(Image.open, file)
@@ -251,7 +246,7 @@ class QuotesMod(loader.Module):
                 try:
                     await utils.answer(message, sticker)
                 except telethon.errors.rpcerrorlist.ChatSendStickersForbiddenError:
-                    await utils.answer(message, self.strings["cannot_send_stickers"])
+                    await utils.answer(message, self.strings("cannot_send_stickers", message))
                 file.close()
 
 

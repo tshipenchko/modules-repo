@@ -23,10 +23,6 @@ from io import BytesIO
 from .. import loader, utils
 
 
-def register(cb):
-    cb(TTSMod())
-
-
 @loader.tds
 class TTSMod(loader.Module):
     strings = {"name": "Text to speech",
@@ -34,9 +30,10 @@ class TTSMod(loader.Module):
                "tts_needs_text": "<code>I need some text to convert to speech!</code>"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("TTS_LANG", "en", lambda: self.strings["tts_lang_cfg"])
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("TTS_LANG", "en", lambda m: self.strings("tts_lang_cfg", m))
 
+    @loader.unrestricted
+    @loader.ratelimit
     async def ttscmd(self, message):
         """Convert text to speech with Google APIs"""
         text = utils.get_args_raw(message.message)
@@ -44,7 +41,7 @@ class TTSMod(loader.Module):
             if message.is_reply:
                 text = (await message.get_reply_message()).message
             else:
-                await utils.answer(message, self.strings["tts_needs_text"])
+                await utils.answer(message, self.strings("tts_needs_text", message))
                 return
 
         tts = await utils.run_sync(gTTS, text, lang=self.config["TTS_LANG"])

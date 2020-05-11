@@ -24,10 +24,6 @@ import re
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(TerminalMod())
-
-
 @loader.tds
 class TerminalMod(loader.Module):
     """Runs commands"""
@@ -52,16 +48,16 @@ class TerminalMod(loader.Module):
                "done": "<b>Done</b>"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("FLOOD_WAIT_PROTECT", 2, lambda: self.strings["flood_wait_protect_cfg_doc"])
+        self.config = loader.ModuleConfig("FLOOD_WAIT_PROTECT", 2,
+                                          lambda m: self.strings("flood_wait_protect_cfg_doc", m))
         self.activecmds = {}
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
+    @loader.owner
     async def terminalcmd(self, message):
         """.terminal <command>"""
         await self.run_command(message, utils.get_args_raw(message))
 
+    @loader.owner
     async def aptcmd(self, message):
         """Shorthand for '.terminal apt'"""
         await self.run_command(message, ("apt " if os.geteuid() == 0 else "sudo -S apt ")
@@ -92,37 +88,39 @@ class TerminalMod(loader.Module):
         await editor.cmd_ended(await sproc.wait())
         del self.activecmds[hash_msg(message)]
 
+    @loader.owner
     async def terminatecmd(self, message):
         """Use in reply to send SIGTERM to a process"""
         if not message.is_reply:
-            await message.edit(self.strings["what_to_kill"])
+            await utils.answer(message, self.strings("what_to_kill", message))
             return
         if hash_msg(await message.get_reply_message()) in self.activecmds:
             try:
                 self.activecmds[hash_msg(await message.get_reply_message())].terminate()
             except Exception:
                 logger.exception("Killing process failed")
-                await message.edit(self.strings["kill_fail"])
+                await utils.answer(message, self.strings("kill_fail", message))
             else:
-                await message.edit(self.strings["killed"])
+                await utils.answer(message, self.strings("killed", message))
         else:
-            await message.edit(self.strings["no_cmd"])
+            await utils.answer(message, self.strings("no_cmd", message))
 
+    @loader.owner
     async def killcmd(self, message):
         """Use in reply to send SIGKILL to a process"""
         if not message.is_reply:
-            await message.edit(self.strings["what_to_kill"])
+            await utils.answer(message, self.strings("what_to_kill", message))
             return
         if hash_msg(await message.get_reply_message()) in self.activecmds:
             try:
                 self.activecmds[hash_msg(await message.get_reply_message())].kill()
             except Exception:
                 logger.exception("Killing process failed")
-                await message.edit(self.strings["kill_fail"])
+                await utils.answer(message, self.strings("kill_fail", message))
             else:
-                await message.edit(self.strings["killed"])
+                await utils.answer(message, self.strings("killed", message))
         else:
-            await message.edit(self.strings["no_cmd"])
+            await utils.answer(message, self.strings("no_cmd", message))
 
     async def neofetchcmd(self, message):
         """Show system stats via neofetch"""
@@ -165,7 +163,7 @@ async def sleep_for_task(func, data, delay):
 
 class MessageEditor:
     def __init__(self, message, command, config, strings, request_message):
-        self.message = message
+        self.message = [message]
         self.command = command
         self.stdout = ""
         self.stderr = ""
@@ -184,14 +182,16 @@ class MessageEditor:
         await self.redraw()
 
     async def redraw(self):
-        text = self.strings["running"].format(utils.escape_html(self.command))
+        text = self.strings("running", self.request_message).format(utils.escape_html(self.command))
         if self.rc is not None:
-            text += self.strings["finished"].format(utils.escape_html(str(self.rc)))
-        text += self.strings["stdout"]
-        text += utils.escape_html(self.stdout[max(len(self.stdout) - 2048, 0):]) + self.strings["stderr"]
-        text += utils.escape_html(self.stderr[max(len(self.stderr) - 1024, 0):]) + self.strings["end"]
+            text += self.strings("finished", self.request_message).format(utils.escape_html(str(self.rc)))
+        text += self.strings("stdout", self.request_message)
+        text += utils.escape_html(self.stdout[max(len(self.stdout) - 2048, 0):])
+        text += self.strings("stderr", self.request_message)
+        text += utils.escape_html(self.stderr[max(len(self.stderr) - 1024, 0):])
+        text += self.strings("end", self.request_message)
         try:
-            self.message = await self.message.edit(text)
+            self.message = await utils.answer(self.message, text)
         except telethon.errors.rpcerrorlist.MessageNotModifiedError:
             pass
         except telethon.errors.rpcerrorlist.MessageTooLongError as e:
@@ -234,32 +234,35 @@ class SudoMessageEditor(MessageEditor):
         if len(lines) > 1 and re.fullmatch(self.WRONG_PASS,
                                            lines[-2]) and lastlines[0] == self.PASS_REQ and self.state == 1:
             logger.debug("switching state to 0")
-            await self.authmsg.edit(self.strings["auth_failed"])
+            await self.authmsg.edit(self.strings("auth_failed", self.request_message))
             self.state = 0
             handled = True
             await asyncio.sleep(2)
             await self.authmsg.delete()
         if lastlines[0] == self.PASS_REQ and self.state == 0:
             logger.debug("Success to find sudo log!")
-            text = self.strings["auth_needed"].format((await self.message.client.get_me()).id)
+            text = self.strings("auth_needed", self.request_message).format((await self.message[0].client.get_me()).id)
             try:
-                await self.message.edit(text)
+                await utils.answer(self.message, text)
             except telethon.errors.rpcerrorlist.MessageNotModifiedError as e:
                 logger.debug(e)
             logger.debug("edited message with link to self")
             command = "<code>" + utils.escape_html(self.command) + "</code>"
             user = utils.escape_html(lastlines[1][:-1])
-            self.authmsg = await self.message.client.send_message("me", self.strings["auth_msg"].format(command, user))
+            self.authmsg = await self.message.client[0].send_message("me",
+                                                                     self.strings("auth_msg",
+                                                                                  self.request_message).format(command,
+                                                                                                               user))
             logger.debug("sent message to self")
-            self.message.client.remove_event_handler(self.on_message_edited)
-            self.message.client.add_event_handler(self.on_message_edited,
-                                                  telethon.events.messageedited.MessageEdited(chats=["me"]))
+            self.message[0].client.remove_event_handler(self.on_message_edited)
+            self.message[0].client.add_event_handler(self.on_message_edited,
+                                                     telethon.events.messageedited.MessageEdited(chats=["me"]))
             logger.debug("registered handler")
             handled = True
         if len(lines) > 1 and (re.fullmatch(self.TOO_MANY_TRIES, lastline)
                                and (self.state == 1 or self.state == 3 or self.state == 4)):
             logger.debug("password wrong lots of times")
-            await self.message.edit(self.strings["auth_locked"])
+            await utils.answer(self.message, self.strings("auth_locked", self.request_message))
             await self.authmsg.delete()
             self.state = 2
             handled = True
@@ -289,7 +292,7 @@ class SudoMessageEditor(MessageEditor):
         if hash_msg(message) == hash_msg(self.authmsg):
             # The user has provided interactive authentication. Send password to stdin for sudo.
             try:
-                self.authmsg = await message.edit(self.strings["auth_ongoing"])
+                self.authmsg = await utils.answer(message, self.strings("auth_ongoing", self.request_message))
             except telethon.errors.rpcerrorlist.MessageNotModifiedError:
                 # Try to clear personal info if the edit fails
                 await message.delete()
@@ -311,13 +314,13 @@ class RawMessageEditor(SudoMessageEditor):
         else:
             text = "<code>" + utils.escape_html(self.stderr[max(len(self.stderr) - 4095, 0):]) + "</code>"
         if self.rc is not None and self.show_done:
-            text += "\n" + self.strings["done"]
+            text += "\n" + self.strings("done", self.request_message)
         logger.debug(text)
         try:
-            await self.message.edit(text)
+            await utils.answer(self.message, text)
         except telethon.errors.rpcerrorlist.MessageNotModifiedError:
             pass
-        except telethon.errors.rpcerrorlist.MessageEmptyError:
+        except (telethon.errors.rpcerrorlist.MessageEmptyError, ValueError):
             pass
         except telethon.errors.rpcerrorlist.MessageTooLongError as e:
             logger.error(e)

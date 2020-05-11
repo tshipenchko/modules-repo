@@ -22,10 +22,6 @@ from telethon.tl.functions.users import GetFullUserRequest
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(UserInfoMod())
-
-
 @loader.tds
 class UserInfoMod(loader.Module):
     """Tells you about people"""
@@ -49,16 +45,15 @@ class UserInfoMod(loader.Module):
                "encode_cfg_doc": "Encode unicode characters"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("ENCODE", False, lambda: self.strings["encode_cfg_doc"])
-
-    def config_complete(self):
-        self.name = self.strings["name"]
+        self.config = loader.ModuleConfig("ENCODE", False, lambda m: self.strings("encode_cfg_doc", m))
 
     def _handle_string(self, string):
         if self.config["ENCODE"]:
             return utils.escape_html(ascii(string))
         return utils.escape_html(string)
 
+    @loader.unrestricted
+    @loader.ratelimit
     async def userinfocmd(self, message):
         """Use in reply to get user info"""
         if message.is_reply:
@@ -66,30 +61,32 @@ class UserInfoMod(loader.Module):
         else:
             args = utils.get_args(message)
             if not args:
-                return await utils.answer(message, self.strings["no_args_or_reply"])
+                return await utils.answer(message, self.strings("no_args_or_reply", message))
             try:
                 full = await self.client(GetFullUserRequest(args[0]))
             except ValueError:
-                return await utils.answer(message, self.strings["find_error"])
+                return await utils.answer(message, self.strings("find_error", message))
         logger.debug(full)
-        reply = self.strings["first_name"].format(self._handle_string(full.user.first_name))
+        reply = self.strings("first_name", message).format(self._handle_string(full.user.first_name))
         if full.user.last_name is not None:
-            reply += self.strings["last_name"].format(self._handle_string(full.user.last_name))
-        reply += self.strings["id"].format(utils.escape_html(full.user.id))
-        reply += self.strings["bio"].format(self._handle_string(full.about))
-        reply += self.strings["restricted"].format(utils.escape_html(str(full.user.restricted)))
-        reply += self.strings["deleted"].format(utils.escape_html(str(full.user.deleted)))
-        reply += self.strings["bot"].format(utils.escape_html(str(full.user.bot)))
-        reply += self.strings["verified"].format(utils.escape_html(str(full.user.verified)))
+            reply += self.strings("last_name", message).format(self._handle_string(full.user.last_name))
+        reply += self.strings("id", message).format(utils.escape_html(full.user.id))
+        reply += self.strings("bio", message).format(self._handle_string(full.about))
+        reply += self.strings("restricted", message).format(utils.escape_html(str(full.user.restricted)))
+        reply += self.strings("deleted", message).format(utils.escape_html(str(full.user.deleted)))
+        reply += self.strings("bot", message).format(utils.escape_html(str(full.user.bot)))
+        reply += self.strings("verified", message).format(utils.escape_html(str(full.user.verified)))
         if full.user.photo:
-            reply += self.strings["dc_id"].format(utils.escape_html(str(full.user.photo.dc_id)))
-        await message.edit(reply)
+            reply += self.strings("dc_id", message).format(utils.escape_html(str(full.user.photo.dc_id)))
+        await utils.answer(message, reply)
 
+    @loader.unrestricted
+    @loader.ratelimit
     async def permalinkcmd(self, message):
         """Get permalink to user based on ID or username"""
         args = utils.get_args(message)
         if len(args) < 1:
-            await message.edit(self.strings["provide_user"])
+            await utils.answer(message, self.strings("provide_user", message))
             return
         try:
             user = int(args[0])
@@ -100,17 +97,17 @@ class UserInfoMod(loader.Module):
         except ValueError as e:
             logger.debug(e)
             # look for the user
-            await message.edit(self.strings["searching_user"])
+            await utils.answer(message, self.strings("searching_user", message))
             await self.client.get_dialogs()
             try:
                 user = await self.client.get_entity(user)
             except ValueError:
-                await message.edit(self.strings["cannot_find"])
+                await utils.answer(message, self.strings("cannot_find", message))
                 return
         if len(args) > 1:
-            await utils.answer(message, self.strings["permalink_txt"].format(uid=user.id, txt=args[1]))
+            await utils.answer(message, self.strings("permalink_txt", message).format(uid=user.id, txt=args[1]))
         else:
-            await message.edit(self.strings["permalink_uid"].format(uid=user.id))
+            await utils.answer(message, self.strings("permalink_uid", message).format(uid=user.id))
 
     async def client_ready(self, client, db):
         self.client = client

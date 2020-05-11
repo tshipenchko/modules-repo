@@ -25,10 +25,6 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(GoogleSearchMod())
-
-
 @loader.tds
 class GoogleSearchMod(loader.Module):
     """Make a Google search, right in your chat!"""
@@ -38,26 +34,25 @@ class GoogleSearchMod(loader.Module):
                "results": "<b>These came back from a Google search for</b> <code>{}</code>:\n\n",
                "result": "<a href='{}'>{}</a>\n\n<code>{}</code>\n"}
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
+    @loader.unrestricted
+    @loader.ratelimit
     async def googlecmd(self, message):
         """Shows Google search results."""
         text = utils.get_args_raw(message.message)
         if not text:
             text = (await message.get_reply_message()).message
         if not text:
-            await utils.answer(message, self.strings["no_term"])
+            await utils.answer(message, self.strings("no_term", message))
             return
         # TODO: add ability to specify page number.
         gsearch = GoogleSearch()
         gresults = await gsearch.async_search(text, 1)
         if not gresults:
-            await utils.answer(message, self.strings["no_results"].format(text))
+            await utils.answer(message, self.strings("no_results", message).format(text))
             return
         msg = ""
         results = zip(gresults["titles"], gresults["links"], gresults["descriptions"])
         for result in results:
-            msg += self.strings["result"].format(utils.escape_html(result[0]), utils.escape_html(result[1]),
-                                                 utils.escape_html(result[2]))
-        await utils.answer(message, self.strings["results"].format(utils.escape_html(text)) + msg)
+            msg += self.strings("result", message).format(utils.escape_html(result[0]), utils.escape_html(result[1]),
+                                                          utils.escape_html(result[2]))
+        await utils.answer(message, self.strings("results", message).format(utils.escape_html(text)) + msg)

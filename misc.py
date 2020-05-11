@@ -23,10 +23,6 @@ import random
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(MiscMod())
-
-
 @loader.tds
 class MiscMod(loader.Module):
     """Miscellaneous tasks"""
@@ -71,10 +67,12 @@ class MiscMod(loader.Module):
     def config_complete(self):
         self.name = self.strings["name"]
 
+    @loader.unrestricted
     async def voltecmd(self, message):
         """Use when the bholit just won't work"""
         await utils.answer(message, self.config["VOLTE_TEXT"])
 
+    @loader.unrestricted
     async def fcmd(self, message):
         """Pays respects"""
         args = utils.get_args_raw(message)
@@ -94,10 +92,12 @@ class MiscMod(loader.Module):
                 out += (args * c) + "\n"
             await utils.answer(message, "<code>" + utils.escape_html(out) + "</code>")
 
+    @loader.unrestricted
     async def huaweicmd(self, message):
         """Use when your country is "investing" in Huawei 5G modems"""
         await utils.answer(message, self.config["HUAWEI_TEXT"])
 
+    @loader.unrestricted
     async def btcmd(self, message):
         """Blue text must click"""
         await utils.answer(message, self.config["BLUE_TEXT"])

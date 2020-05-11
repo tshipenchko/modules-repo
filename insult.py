@@ -23,18 +23,12 @@ import random
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(InsultMod())
-
-
 @loader.tds
 class InsultMod(loader.Module):
     """Shouts at people"""
     strings = {"name": "Insulter"}
 
-    def __init__(self):
-        self.name = self.strings["name"]
-
+    @loader.unrestricted
     async def insultcmd(self, message):
         """Use when angry"""
         # TODO localisation?

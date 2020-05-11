@@ -21,23 +21,18 @@ import telethon
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(PurgeMod())
-
-
 @loader.tds
 class PurgeMod(loader.Module):
     """Deletes your messages"""
     strings = {"name": "Purge",
                "from_where": "From where shall I purge?"}
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
+    @loader.group_admin_delete_messages
+    @loader.ratelimit
     async def purgecmd(self, message):
         """Purge from the replied message"""
         if not message.is_reply:
-            await message.edit(self.strings["from_where"])
+            await utils.answer(message, self.strings("from_where", message))
             return
 
         from_users = set()
@@ -70,6 +65,8 @@ class PurgeMod(loader.Module):
             await message.client.delete_messages(message.to_id, msgs)
         await self.allmodules.log("purge", group=message.to_id, affected_uids=from_ids)
 
+    @loader.group_admin_delete_messages
+    @loader.ratelimit
     async def delcmd(self, message):
         """Delete the replied message"""
         msgs = [message.id]

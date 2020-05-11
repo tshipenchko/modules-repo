@@ -27,10 +27,6 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(InfoMod())
-
-
 @loader.tds
 class InfoMod(loader.Module):
     """Provides system information about the computer hosting this bot"""
@@ -47,15 +43,12 @@ class InfoMod(loader.Module):
                "python_version": "<b>Python version:</b> <code>{}</code>",
                "telethon_version": "<b>Telethon version:</b> <code>{}</code>"}
 
-    def __init__(self):
-        self.name = self.strings["name"]
-
     async def infocmd(self, message):
         """Shows system information"""
-        reply = self.strings["info_title"]
-        reply += "\n" + self.strings["kernel"].format(utils.escape_html(platform.release()))
-        reply += "\n" + self.strings["arch"].format(utils.escape_html(platform.architecture()[0]))
-        reply += "\n" + self.strings["os"].format(utils.escape_html(platform.system()))
+        reply = self.strings("info_title", message)
+        reply += "\n" + self.strings("kernel", message).format(utils.escape_html(platform.release()))
+        reply += "\n" + self.strings("arch", message).format(utils.escape_html(platform.architecture()[0]))
+        reply += "\n" + self.strings("os", message).format(utils.escape_html(platform.system()))
 
         if platform.system() == "Linux":
             done = False
@@ -64,7 +57,7 @@ class InfoMod(loader.Module):
                 b = {}
                 for line in a:
                     b[line.split("=")[0]] = line.split("=")[1].strip().strip("\"")
-                reply += "\n" + self.strings["distro"].format(utils.escape_html(b["PRETTY_NAME"]))
+                reply += "\n" + self.strings("distro", message).format(utils.escape_html(b["PRETTY_NAME"]))
                 done = True
             except FileNotFoundError:
                 getprop = shutil.which("getprop")
@@ -79,12 +72,12 @@ class InfoMod(loader.Module):
                     vers, unused = await ver.communicate()
                     secs, unused = await sec.communicate()
                     if sdk.returncode == 0 and ver.returncode == 0 and sec.returncode == 0:
-                        reply += "\n" + self.strings["android_sdk"].format(sdks.decode("utf-8").strip())
-                        reply += "\n" + self.strings["android_ver"].format(vers.decode("utf-8").strip())
-                        reply += "\n" + self.strings["android_patch"].format(secs.decode("utf-8").strip())
+                        reply += "\n" + self.strings("android_sdk", message).format(sdks.decode("utf-8").strip())
+                        reply += "\n" + self.strings("android_ver", message).format(vers.decode("utf-8").strip())
+                        reply += "\n" + self.strings("android_patch", message).format(secs.decode("utf-8").strip())
                         done = True
             if not done:
-                reply += "\n" + self.strings["unknown_distro"]
-        reply += "\n" + self.strings["python_version"].format(utils.escape_html(sys.version))
-        reply += "\n" + self.strings["telethon_version"].format(utils.escape_html(telethon.__version__))
+                reply += "\n" + self.strings("unknown_distro", message)
+        reply += "\n" + self.strings("python_version", message).format(utils.escape_html(sys.version))
+        reply += "\n" + self.strings("telethon_version", message).format(utils.escape_html(telethon.__version__))
         await utils.answer(message, reply)

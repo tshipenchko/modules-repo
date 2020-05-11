@@ -21,10 +21,6 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(ForwardMod())
-
-
 @loader.tds
 class ForwardMod(loader.Module):
     """Forwards messages"""
@@ -32,16 +28,13 @@ class ForwardMod(loader.Module):
                "error": "<b>Invalid chat to forward to</b>",
                "done": "<b>Forwarded all messages</b>"}
 
-    def config_complete(self):
-        self.name = self.strings["name"]
-
     async def fwdallcmd(self, message):
         """.fwdall <to_user>
            Forwards all messages in chat"""
         try:
             user = await message.client.get_input_entity(utils.get_args(message)[0])
         except ValueError:
-            await utils.answer(self.strings["error"])
+            await utils.answer(self.strings("error", message))
         msgs = []
         async for msg in message.client.iter_messages(
                 entity=message.to_id,
@@ -54,4 +47,4 @@ class ForwardMod(loader.Module):
         if len(msgs) > 0:
             logger.debug(msgs)
             await message.client.forward_messages(user, msgs, message.from_id)
-        await utils.answer(message, self.strings["done"])
+        await utils.answer(message, self.strings("done", message))

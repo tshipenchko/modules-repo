@@ -22,10 +22,6 @@ import asyncio
 logger = logging.getLogger(__name__)
 
 
-def register(cb):
-    cb(QuickTypeMod())
-
-
 @loader.tds
 class QuickTypeMod(loader.Module):
     """Deletes your message after a timeout"""
@@ -34,25 +30,22 @@ class QuickTypeMod(loader.Module):
                "lazy_af": "Go type it urself m8",
                "nice_number": "Nice number bro"}
 
-    def __init__(self):
-        self.name = self.strings["name"]
-
     async def quicktypecmd(self, message):
         """.quicktype <timeout> <message>"""
         args = utils.get_args(message)
         logger.debug(args)
         if len(args) == 0:
-            await utils.answer(message, self.strings["need_something"])
+            await utils.answer(message, self.strings("need_something", message))
             return
         if len(args) == 1:
-            await utils.answer(message, self.strings["lazy_af"])
+            await utils.answer(message, self.strings("lazy_af", message))
             return
         t = args[0]
         mess = " ".join(args[1:])
         try:
             t = float(t)
         except ValueError:
-            await utils.answer(message, self.strings["nice_number"])
+            await utils.answer(message, self.strings("nice_number", message))
             return
         await utils.answer(message, mess)
         await asyncio.sleep(t)
