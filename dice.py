@@ -31,6 +31,13 @@ class DiceMod(loader.Module):
     """Dice"""
     strings = {"name": "Dice"}
 
+    def __init__(self):
+        self.config = loader.ModuleConfig("POSSIBLE_VALUES", {"": [1, 2, 3, 4, 5, 6],
+                                                              "🎲": [1, 2, 3, 4, 5, 6],
+                                                              "🎯": [1, 2, 3, 4, 5, 6],
+                                                              "🏀": [1, 2, 3, 4, 5]},
+                                          "Mapping of emoji to possible values")
+
     @loader.unrestricted
     async def dicecmd(self, message):
         """Rolls a die (optionally with the specified value)
@@ -40,12 +47,16 @@ class DiceMod(loader.Module):
             try:
                 emoji = args[0]
             except IndexError:
-                emoji = ""
+                emoji = "🎲"
+            possible = self.config["POSSIBLE_VALUES"].get(emoji, None)
+            if possible is None:
+                emoji = "🎲"
+                possible = self.config["POSSIBLE_VALUES"][emoji]
             values = set()
             try:
                 for val in args[1].split(","):
                     value = int(val)
-                    if value >= 1 and value <= 6:
+                    if value in possible:
                         values.add(value)
             except (ValueError, IndexError):
                 values.clear()
@@ -74,5 +85,5 @@ class DiceMod(loader.Module):
             try:
                 emoji = args[0]
             except IndexError:
-                emoji = ""
+                emoji = "🎲"
             await message.reply(file=InputMediaDice(emoji))
