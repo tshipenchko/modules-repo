@@ -159,8 +159,7 @@ class LydiaMod(loader.Module):
         if self._lydia is None:
             self._lydia = coffeehouse.LydiaAI(self.config["CLIENT_KEY"])
         if (isinstance(message.to_id, types.PeerUser) and not self.get_allowed(message.from_id)) or \
-                (self.is_forced(utils.get_chat_id(message), message.from_id)
-                 and not isinstance(message.to_id, types.PeerUser)):
+                self.is_forced(utils.get_chat_id(message), message.from_id):
             user = await utils.get_user(message)
             if user.is_self or user.bot or user.verified:
                 logger.debug("User is self, bot or verified.")
