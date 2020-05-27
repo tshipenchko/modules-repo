@@ -170,7 +170,7 @@ class QuotesMod(loader.Module):
             reply_text = reply_to.message
 
         date = ""
-        if not reply.fwd_from:
+        if reply.fwd_from:
             date = reply.fwd_from.date.strftime("%H:%M")
         else:
             date = reply.date.strftime("%H:%M")
