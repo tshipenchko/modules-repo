@@ -146,13 +146,13 @@ class QuotesMod(loader.Module):
 
         reply_username = ""
         reply_text = ""
-        if reply.is_reply is True:
-            reply_to = await reply.get_reply_message()
+        reply_to = await reply.get_reply_message()
+        if reply_to:
             reply_peer = None
-            if reply_to.fwd_from is not None:
-                if reply_to.forward.chat is not None:
+            if reply_to.fwd_from:
+                if reply_to.forward.chat:
                     reply_peer = reply_to.forward.chat
-                elif reply_to.fwd_from.from_id is not None:
+                elif reply_to.fwd_from.from_id:
                     try:
                         user_id = reply_to.fwd_from.from_id
                         user = await self.client(telethon.tl.functions.users.GetFullUserRequest(user_id))
@@ -161,16 +161,16 @@ class QuotesMod(loader.Module):
                         pass
                 else:
                     reply_username = reply_to.fwd_from.from_name
-            elif reply_to.from_id is not None:
+            elif not reply_to.from_id:
                 reply_user = await self.client(telethon.tl.functions.users.GetFullUserRequest(reply_to.from_id))
                 reply_peer = reply_user.user
 
-            if reply_username is None or reply_username == "":
+            if not reply_username:
                 reply_username = telethon.utils.get_display_name(reply_peer)
             reply_text = reply_to.message
 
         date = ""
-        if reply.fwd_from is not None:
+        if not reply.fwd_from:
             date = reply.fwd_from.date.strftime("%H:%M")
         else:
             date = reply.date.strftime("%H:%M")
