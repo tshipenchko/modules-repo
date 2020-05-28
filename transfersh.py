@@ -52,7 +52,7 @@ class TransferShMod(loader.Module):
             msg = message
         else:
             msg = (await message.get_reply_message())
-        doc = msg.media
+        doc = getattr(msg, "media", None)
         if doc is None:
             await utils.answer(message, self.strings("no_file", message))
             return
