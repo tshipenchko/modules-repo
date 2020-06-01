@@ -36,7 +36,7 @@ class QuotesMod(loader.Module):
         "name": "Quotes",
         "api_token_cfg_doc": "API Key/Token for Quotes.",
         "api_url_cfg_doc": "API URL for Quotes.",
-        "colors_cfg_doc": "Username colors",
+        "username_colors_cfg_doc": "Username colors",
         "default_username_color_cfg_doc": "Default color for the username.",
         "no_reply": "<b>You didn't reply to a message.</b>",
         "no_template": "<b>You didn't specify the template.</b>",
@@ -55,13 +55,13 @@ class QuotesMod(loader.Module):
     }
 
     def __init__(self):
-        self.config = loader.ModuleConfig("api_token", None, lambda m: self.strings("api_token_cfg_doc", m),
-                                          "api_url", "http://api.antiddos.systems",
+        self.config = loader.ModuleConfig("API_TOKEN", None, lambda m: self.strings("api_token_cfg_doc", m),
+                                          "API_URL", "http://api.antiddos.systems",
                                           lambda m: self.strings("api_url_cfg_doc", m),
-                                          "username_colors", ["#fb6169", "#faa357", "#b48bf2", "#85de85",
+                                          "USERNAME_COLORS", ["#fb6169", "#faa357", "#b48bf2", "#85de85",
                                                               "#62d4e3", "#65bdf3", "#ff5694"],
-                                          lambda m: self.strings("colors_cfg_doc", m),
-                                          "default_username_color", "#b48bf2",
+                                          lambda m: self.strings("username_colors_cfg_doc", m),
+                                          "DEFAULT_USERNAME_COLOR", "#b48bf2",
                                           lambda m: self.strings("default_username_color_cfg_doc", m))
 
     async def client_ready(self, client, db):
@@ -140,9 +140,9 @@ class QuotesMod(loader.Module):
             profile_photo_url = ""
 
         if user_id is not None:
-            username_color = self.config["username_colors"][user_id % 7]
+            username_color = self.config["USERNAME_COLORS"][user_id % 7]
         else:
-            username_color = self.config["default_username_color"]
+            username_color = self.config["DEFAULT_USERNAME_COLOR"]
 
         reply_username = ""
         reply_text = ""
@@ -186,10 +186,10 @@ class QuotesMod(loader.Module):
             "ReplyText": reply_text,
             "Date": date,
             "Template": args[0] if len(args) > 0 else "default",
-            "APIKey": self.config["api_token"]
+            "APIKey": self.config["API_TOKEN"]
         })
 
-        resp = await utils.run_sync(requests.post, self.config["api_url"] + "/api/v2/quote", data=request)
+        resp = await utils.run_sync(requests.post, self.config["API_URL"] + "/api/v2/quote", data=request)
         resp.raise_for_status()
         resp = await utils.run_sync(resp.json)
 
@@ -207,8 +207,8 @@ class QuotesMod(loader.Module):
                 raise ValueError("Invalid response from server", resp)
         elif resp["status"] == 404:
             if resp["message"] == "ERROR_TEMPLATE_NOT_FOUND":
-                newreq = await utils.run_sync(requests.post, self.config["api_url"] + "/api/v1/getalltemplates", data={
-                    "token": self.config["api_token"]
+                newreq = await utils.run_sync(requests.post, self.config["API_URL"] + "/api/v1/getalltemplates", data={
+                    "token": self.config["API_TOKEN"]
                 })
                 newreq = await utils.run_sync(newreq.json)
 
@@ -226,7 +226,7 @@ class QuotesMod(loader.Module):
         elif resp["status"] != 200:
             raise ValueError("Invalid response from server", resp)
 
-        req = await utils.run_sync(requests.get, self.config["api_url"] + "/cdn/" + resp["message"])
+        req = await utils.run_sync(requests.get, self.config["API_URL"] + "/cdn/" + resp["message"])
         req.raise_for_status()
         file = BytesIO(req.content)
         file.seek(0)
