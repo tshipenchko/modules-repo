@@ -46,17 +46,18 @@ class TyperMod(loader.Module):
             await utils.answer(message, self.strings("no_message", message))
             return
         m = ""
+        entities = message.entities or []
         for c in a:
             m += self.config["TYPE_CHAR"]
-            message = await update_message(message, m)
+            message = await update_message(message, m, entities)
             await asyncio.sleep(0.04)
             m = m[:-1] + c
-            message = await update_message(message, m)
+            message = await update_message(message, m, entities)
             await asyncio.sleep(0.02)
 
 
-async def update_message(message, m):
+async def update_message(message, m, entities):
     try:
-        return await utils.answer(message, m)
+        return await utils.answer(message, m, parse_mode=lambda t: (t, entities))
     except MessageNotModifiedError:
         return message  # space doesnt count
