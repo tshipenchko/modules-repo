@@ -47,19 +47,29 @@ class PurgeMod(loader.Module):
 
         msgs = []
         from_ids = set()
-        async for msg in message.client.iter_messages(
-                entity=message.to_id,
-                min_id=message.reply_to_msg_id - 1,
-                reverse=True):
-            if from_users and msg.from_id not in from_users:
-                continue
-            msgs.append(msg.id)
-            from_ids.add(msg.from_id)
-            if len(msgs) >= 99:
-                logger.debug(msgs)
-                await message.client.delete_messages(message.to_id, msgs)
-                msgs.clear()
-            # No async list comprehension in 3.5
+        if await message.client.is_bot():
+            if not message.is_channel:
+                await utils.answer(message, self.strings("not_supergroup_bot", message))
+                return
+            for msg in range(message.reply_to_msg_id, message.id + 1):
+                msgs.append(msg)
+                if len(msgs) >= 99:
+                    logger.debug(msgs)
+                    await message.client.delete_messages(message.to_id, msgs)
+                    msgs.clear()
+        else:
+            async for msg in message.client.iter_messages(
+                    entity=message.to_id,
+                    min_id=message.reply_to_msg_id - 1,
+                    reverse=True):
+                if from_users and msg.from_id not in from_users:
+                    continue
+                msgs.append(msg.id)
+                from_ids.add(msg.from_id)
+                if len(msgs) >= 99:
+                    logger.debug(msgs)
+                    await message.client.delete_messages(message.to_id, msgs)
+                    msgs.clear()
         if msgs:
             logger.debug(msgs)
             await message.client.delete_messages(message.to_id, msgs)
