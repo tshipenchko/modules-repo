@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 class PurgeMod(loader.Module):
     """Deletes your messages"""
     strings = {"name": "Purge",
-               "from_where": "From where shall I purge?"}
+               "from_where": "<b>Which messages should be purged?</b>",
+               "not_supergroup_bot": "<b>Purges can only take place in supergroups</b>"}
 
     @loader.group_admin_delete_messages
     @loader.ratelimit
