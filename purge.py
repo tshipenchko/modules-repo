@@ -26,7 +26,8 @@ class PurgeMod(loader.Module):
     """Deletes your messages"""
     strings = {"name": "Purge",
                "from_where": "<b>Which messages should be purged?</b>",
-               "not_supergroup_bot": "<b>Purges can only take place in supergroups</b>"}
+               "not_supergroup_bot": "<b>Purges can only take place in supergroups</b>",
+               "delete_what": "<b>What message should be deleted?</b>"}
 
     @loader.group_admin_delete_messages
     @loader.ratelimit
@@ -82,6 +83,9 @@ class PurgeMod(loader.Module):
         """Delete the replied message"""
         msgs = [message.id]
         if not message.is_reply:
+            if await message.client.is_bot():
+                await utils.answer(message, self.strings("delete_what", message))
+                return
             msg = await message.client.iter_messages(message.to_id, 1, max_id=message.id).__anext__()
         else:
             msg = await message.get_reply_message()
