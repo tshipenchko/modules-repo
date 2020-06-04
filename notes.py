@@ -46,9 +46,15 @@ class NotesMod(loader.Module):
             return
         asset_id = self._db.get(__name__, "notes", {}).get(args[0], None)
         logger.debug(asset_id)
-        if asset_id is None:
+        if asset_id is not None:
+            asset = await self._db.fetch_asset(asset_id)
+        else:
+            asset = None
+        if asset is None:
+            self.del_note(args[0])
             await utils.answer(message, self.strings("no_note", message))
             return
+
         await utils.answer(message, await self._db.fetch_asset(asset_id))
 
     async def delallnotescmd(self, message):
@@ -85,10 +91,17 @@ class NotesMod(loader.Module):
         args = utils.get_args(message)
         if not args:
             await utils.answer(message, self.strings("delnote_args", message))
-        old = self._db.get(__name__, "notes", {})
-        del old[args[0]]
-        self._db.set(__name__, "notes", old)
+        self.del_note(args[0])
         await utils.answer(message, self.strings("delnote_done", message))
+
+    def del_note(self, note):
+        old = self._db.get(__name__, "notes", {})
+        try:
+            del old[note]
+        except KeyError:
+            pass
+        else:
+            self._db.set(__name__, "notes", old)
 
     async def notescmd(self, message):
         """List the saved notes"""
