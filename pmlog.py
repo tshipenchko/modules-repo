@@ -17,6 +17,8 @@
 import asyncio
 import logging
 
+from telethon import types
+
 from .. import loader, utils
 
 logger = logging.getLogger(__name__)
@@ -54,7 +56,7 @@ class PMLogMod(loader.Module):
         await utils.answer(message, self.strings("start", message))
 
     async def watcher(self, message):
-        if not message.is_private:
+        if not message.is_private or not isinstance(message, types.Message):
             return
         if self.config["LOG_GROUP"] and utils.get_chat_id(message) in self._db.get(__name__, "users", []):
             await message.forward_to(self.config["LOG_GROUP"])

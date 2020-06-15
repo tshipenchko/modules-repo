@@ -19,6 +19,7 @@ from .. import loader, utils
 import logging
 
 from telethon import functions, types
+
 logger = logging.getLogger(__name__)
 
 
@@ -122,6 +123,8 @@ class AntiPMMod(loader.Module):
         await utils.answer(message, self.strings("notif_on", message))
 
     async def watcher(self, message):
+        if not isinstance(message, types.Message):
+            return
         if getattr(message.to_id, "user_id", None) == self._me.user_id:
             logger.debug("pm'd!")
             if message.from_id in self._ratelimit:

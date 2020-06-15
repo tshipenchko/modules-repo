@@ -156,6 +156,8 @@ class LydiaMod(loader.Module):
         if not self.config["CLIENT_KEY"]:
             logger.debug("no key set for lydia, returning")
             return
+        if not isinstance(message, types.Message):
+            return
         if self._lydia is None:
             self._lydia = coffeehouse.LydiaAI(self.config["CLIENT_KEY"])
         if (isinstance(message.to_id, types.PeerUser) and not self.get_allowed(message.from_id)) or \
