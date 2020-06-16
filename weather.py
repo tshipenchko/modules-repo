@@ -93,19 +93,19 @@ class WeatherMod(loader.Module):
             args = [args]
         logger.debug(func)
         logger.debug(args)
-        w = await utils.run_sync(func, *args)
+        o = await utils.run_sync(func, *args)
         logger.debug("Weather at %r is %r", args, w)
         try:
-            weather = w.get_weather()
-            temp = weather.get_temperature(self.config["TEMP_UNITS"])
+            w = o.weather
+            temp = w.get_temperature(self.config["TEMP_UNITS"])
         except ValueError:
             await utils.answer(message, self.strings("invalid_temp_units", message))
             return
-        ret = self.strings("result", message).format(loc=eh(w.get_location().get_name()),
-                                                     w=eh(w.get_weather().get_detailed_status().lower()),
+        ret = self.strings("result", message).format(loc=eh(o.get_location().get_name()),
+                                                     w=eh(w.get_detailed_status().lower()),
                                                      high=eh(temp["temp_max"]), low=eh(temp["temp_min"]),
                                                      avg=eh(temp["temp"]), humid=eh(weather.get_humidity()),
-                                                     ws=eh(round_to_sf(weather.get_wind("miles_hour")["speed"], 3)),
-                                                     wd=eh(deg_to_text(weather.get_wind().get("deg", None))
+                                                     ws=eh(round_to_sf(w.get_wind("miles_hour")["speed"], 3)),
+                                                     wd=eh(deg_to_text(w.get_wind().get("deg", None))
                                                            or self.strings("unknown", message)))
         await utils.answer(message, ret)
