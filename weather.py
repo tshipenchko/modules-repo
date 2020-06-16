@@ -94,7 +94,7 @@ class WeatherMod(loader.Module):
         logger.debug(func)
         logger.debug(args)
         o = await utils.run_sync(func, *args)
-        logger.debug("Weather at %r is %r", args, w)
+        logger.debug("Weather at %r is %r", args, o)
         try:
             w = o.weather
             temp = w.get_temperature(self.config["TEMP_UNITS"])
@@ -104,7 +104,7 @@ class WeatherMod(loader.Module):
         ret = self.strings("result", message).format(loc=eh(o.get_location().get_name()),
                                                      w=eh(w.get_detailed_status().lower()),
                                                      high=eh(temp["temp_max"]), low=eh(temp["temp_min"]),
-                                                     avg=eh(temp["temp"]), humid=eh(weather.get_humidity()),
+                                                     avg=eh(temp["temp"]), humid=eh(w.get_humidity()),
                                                      ws=eh(round_to_sf(w.get_wind("miles_hour")["speed"], 3)),
                                                      wd=eh(deg_to_text(w.get_wind().get("deg", None))
                                                            or self.strings("unknown", message)))
