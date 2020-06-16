@@ -37,7 +37,7 @@ class BEmojiMod(loader.Module):
         if message.is_reply:
             text = (await message.get_reply_message()).message
         else:
-            text = utils.get_args_raw(message.message)
+            text = utils.get_args_raw(message)
         if text is None or len(text) == 0:
             await utils.answer(message, self.strings("no_text", message))
             return
@@ -60,4 +60,4 @@ class BEmojiMod(loader.Module):
             n += 1
         text = "".join(text)
         logger.debug(text)
-        await utils.answer(message, text)
+        await utils.answer(message, utils.escape_html(text))
