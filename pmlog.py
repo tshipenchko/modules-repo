@@ -53,7 +53,7 @@ class PMLogMod(loader.Module):
             return
         self._db.set(__name__, "users",
                      list(set(self._db.get(__name__, "users", [])).difference([message.to_id.user_id])))
-        await utils.answer(message, self.strings("start", message))
+        await utils.answer(message, self.strings("stopped", message))
 
     async def watcher(self, message):
         if not message.is_private or not isinstance(message, types.Message):
