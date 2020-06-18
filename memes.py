@@ -60,7 +60,7 @@ class MockMod(loader.Module):
             rn += 1
         text = "".join(text)
         logger.debug(text)
-        await utils.answer(message, text)
+        await utils.answer(message, utils.escape_html(text))
 
     @loader.unrestricted
     async def figletcmd(self, message):
@@ -97,7 +97,7 @@ class MockMod(loader.Module):
         reply_text = re.sub(r"n([aeiouAEIOU])", r"ny\1", reply_text)
         reply_text = re.sub(r"N([aeiouAEIOU])", r"Ny\1", reply_text)
         reply_text = reply_text.replace("ove", "uv")
-        await utils.answer(message, reply_text)
+        await utils.answer(message, utils.escape_html(reply_text))
 
     @loader.unrestricted
     @loader.ratelimit  # TODO switch away from regex as above
@@ -112,7 +112,7 @@ class MockMod(loader.Module):
                 return
         clapped_text = re.sub(" ", " 👏 ", text)
         reply_text = "👏 {} 👏".format(clapped_text)
-        await utils.answer(message, reply_text)
+        await utils.answer(message, utils.escape_html(reply_text))
 
     @loader.unrestricted
     async def vaporcmd(self, message):
