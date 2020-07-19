@@ -32,7 +32,7 @@ class SpamMod(loader.Module):
                "much_spam": "<b>Ух как много раз.</b>"}
 
     async def spamcmd(self, message):
-        """.spam <count> <message>"""
+        """.spam <кол-во раз> <сообщение>"""
         use_reply = False
         args = utils.get_args(message)
         logger.debug(args)
