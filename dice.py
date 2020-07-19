@@ -41,7 +41,7 @@ class DiceMod(loader.Module):
     @loader.unrestricted
     async def dicecmd(self, message):
         """Крутит кубик (возможно добавление необходимого значения)
-           .dice <emoji> <outcomes> <count>"""
+           .dice <эмодзи> <результат> <кол-во>"""
         args = utils.get_args(message)
         if await self.allmodules.check_security(message, security.OWNER | security.SUDO):
             try:
