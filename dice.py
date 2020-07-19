@@ -36,11 +36,11 @@ class DiceMod(loader.Module):
                                                               "🎲": [1, 2, 3, 4, 5, 6],
                                                               "🎯": [1, 2, 3, 4, 5, 6],
                                                               "🏀": [1, 2, 3, 4, 5]},
-                                          "Mapping of emoji to possible values")
+                                          "Возможные варианты эмодзи")
 
     @loader.unrestricted
     async def dicecmd(self, message):
-        """Rolls a die (optionally with the specified value)
+        """Крутит кубик (возможно добавление необходимого значения)
            .dice <emoji> <outcomes> <count>"""
         args = utils.get_args(message)
         if await self.allmodules.check_security(message, security.OWNER | security.SUDO):
