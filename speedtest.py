@@ -26,16 +26,16 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class SpeedtestMod(loader.Module):
-    """Uses speedtest.net"""
+    """Использует speedtest.net"""
     strings = {"name": "Speedtest",
-               "running": "<b>Running speedtest...</b>",
-               "results": "<b>Speedtest Results:</b>",
-               "results_download": "<b>Download:</b> <code>{}</code> <b>MiB/s</b>",
-               "results_upload": "<b>Upload:</b> <code>{}</code> <b>MiB/s</b>",
-               "results_ping": "<b>Ping:</b> <code>{}</code> <b>ms</b>"}
+               "running": "<b>Измеряю скорость интернета.</b>",
+               "results": "<b>Ваша скорость:</b>",
+               "results_download": "<b>Скачивание:</b> <code>{}</code> <b>Мбайт/с</b>",
+               "results_upload": "<b>Выгрузка:</b> <code>{}</code> <b>Мбайт/с</b>",
+               "results_ping": "<b>Пинг:</b> <code>{}</code> <b>ms</b>"}
 
     async def speedtestcmd(self, message):
-        """Tests your internet speed"""
+        """Тестирует скорость интернета"""
         await utils.answer(message, self.strings("running", message))
         args = utils.get_args(message)
         servers = []
