@@ -37,7 +37,7 @@ class GoogleSearchMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def googlecmd(self, message):
-        """Shows Google search results."""
+        """Показывает результаты поиска в Google"""
         text = utils.get_args_raw(message.message)
         if not text:
             text = (await message.get_reply_message()).message
