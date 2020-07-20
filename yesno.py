@@ -20,19 +20,19 @@ import random
 
 @loader.tds
 class YesNoMod(loader.Module):
-    """Helps you make important life choices"""
+    """Помогает вам сделать важный жизненный выбор"""
     strings = {"name": "YesNo",
-               "yes_words_cfg_doc": "Yes words",
-               "no_words_cfg_doc": "No words"}
+               "yes_words_cfg_doc": "Слова да",
+               "no_words_cfg_doc": "Слова нет"}
 
     def __init__(self):
         self.config = loader.ModuleConfig(
-            "YES_WORDS", ["Yes", "Yup", "Absolutely", "Non't"], lambda m: self.strings("yes_words_cfg_doc", m),
-            "NO_WORDS", ["No", "Nope", "Nah", "Yesn't"], lambda m: self.strings("no_words_cfg_doc", m))
+            "YES_WORDS", ["Да", "Дыа", "Абсолютно", "Йес"], lambda m: self.strings("yes_words_cfg_doc", m),
+            "NO_WORDS", ["Нет", "Неа", "Ноу", "Абсолютно нет"], lambda m: self.strings("no_words_cfg_doc", m))
 
     @loader.unrestricted
     async def yesnocmd(self, message):
-        """Make a life choice"""
+        """Сделай выбор жизни"""
         yes = self.config["YES_WORDS"]
         no = self.config["NO_WORDS"]
         if random.getrandbits(1):
