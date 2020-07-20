@@ -27,7 +27,7 @@ class YesNoMod(loader.Module):
 
     def __init__(self):
         self.config = loader.ModuleConfig(
-            "YES_WORDS", ["Да", "Дыа", "Абсолютно", "Йес"], lambda m: self.strings("yes_words_cfg_doc", m),
+            "YES_WORDS", ["Да", "Дыа", "Абсолютно да", "Йес"], lambda m: self.strings("yes_words_cfg_doc", m),
             "NO_WORDS", ["Нет", "Неа", "Ноу", "Абсолютно нет"], lambda m: self.strings("no_words_cfg_doc", m))
 
     @loader.unrestricted
