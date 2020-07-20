@@ -132,6 +132,11 @@ class TerminalMod(loader.Module):
         await self.run_command(message, "uptime", RawMessageEditor(message, "uptime", self.config,
                                                                    self.strings, message))
 
+    @loader.owner
+    async def memtopcmd(self, message):
+        """Показывает топ 5 самых прожорливых процессов по RAM"""
+        await self.run_command(message, """ps -eo size,pid,user,command | awk '{ hr=$1/1024 ; printf("%13.6f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort | tac | head -n 5""", RawMessageEditor(message, """ps -eo size,pid,user,command | awk '{ hr=$1/1024 ; printf("%13.6f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort | tac | head -n 5""", self.config,
+                                                       	self.strings, message))
 
 def hash_msg(message):
     return str(utils.get_chat_id(message)) + "/" + str(message.id)
