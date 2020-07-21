@@ -39,7 +39,7 @@ class XDAMod(loader.Module):
 
     @loader.unrestricted
     async def xdacmd(self, message):
-        """Send random XDA posts"""
+        """Отправляет рандомные XDA посты"""
         length = random.randint(3, 10)
         # Workaround for 3.5
         string = [random.choice(WORDS_WEIGHTED) for dummy in range(length)]

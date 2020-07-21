@@ -33,12 +33,12 @@ def sgen(agen, loop):
 
 @loader.tds
 class TransferShMod(loader.Module):
-    """Upload to and from transfer.sh"""
+    """Загрузить в/из Transfer.sh"""
     strings = {"name": "transfer.sh support",
-               "up_cfg_doc": "URL to upload the file to.",
-               "no_file": "<code>Provide a file to upload</code>",
-               "uploading": "<code>Uploading...</code>",
-               "uploaded": "<a href={}>Uploaded!</a>"}
+               "up_cfg_doc": "URL для загрузки файла.",
+               "no_file": "<code>Предоставьте файл для загрузки</code>",
+               "uploading": "<code>Загрузка...</code>",
+               "uploaded": "<a href={}>Загружено!</a>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("UPLOAD_URL", "https://transfer.sh/{}",
@@ -47,7 +47,7 @@ class TransferShMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def uploadshcmd(self, message):
-        """Uploads to transfer.sh"""
+        """Загружает файл на Transfer.sh"""
         if message.file:
             msg = message
         else:

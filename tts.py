@@ -26,8 +26,8 @@ from .. import loader, utils
 @loader.tds
 class TTSMod(loader.Module):
     strings = {"name": "Text to speech",
-               "tts_lang_cfg": "Set your language code for the TTS here.",
-               "tts_needs_text": "<code>I need some text to convert to speech!</code>"}
+               "tts_lang_cfg": "Установите код языка для преобразования в речь здесь.",
+               "tts_needs_text": "<code>Мне нужен текст для преобразования в речь!</code>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("TTS_LANG", "en", lambda m: self.strings("tts_lang_cfg", m))
@@ -35,7 +35,7 @@ class TTSMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def ttscmd(self, message):
-        """Convert text to speech with Google APIs"""
+        """Преобразование текста в речь с помощью API Google"""
         text = utils.get_args_raw(message.message)
         if len(text) == 0:
             if message.is_reply:

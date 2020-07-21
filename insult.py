@@ -25,19 +25,19 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class InsultMod(loader.Module):
-    """Shouts at people"""
+    """Кричит на людей"""
     strings = {"name": "Insulter"}
 
     @loader.unrestricted
     async def insultcmd(self, message):
-        """Use when angry"""
+        """Используйте, когда злитесь"""
         # TODO localisation?
-        adjectives_start = ["salty", "fat", "fucking", "shitty", "stupid", "retarded", "self conscious", "tiny"]
-        adjectives_mid = ["little", "vitamin D deficient", "idiotic", "incredibly stupid"]
-        nouns = ["cunt", "pig", "pedophile", "beta male", "bottom", "retard", "ass licker", "cunt nugget",
-                 "PENIS", "dickhead", "flute", "idiot", "motherfucker", "loner", "creep"]
-        starts = ["You're a", "You", "Fuck off you", "Actually die you", "Listen up you",
-                  "What the fuck is wrong with you, you"]
+        adjectives_start = ["соленый", "жирный", "ебаный", "говенный", "тупой", "умственно отсталый", "застенчивый", "крохотный"]
+        adjectives_mid = ["маленький", "витамино D дефицитный", "идиотский", "невероятно глупый"]
+        nouns = ["пиздёныш", "свин", "педофил", "бета самец", "днище-мудила", "даун", "очколиз", "пиздолиз",
+                 "ПЕНИС", "залупенец", "желобок", "идиот", "ублюдок", "холостяк", "крип"]
+        starts = ["Ты блять", "Ты", "Ты ёбаный", "На самом деле ты мёртвый", "Слушай, ты -",
+                  "Что за хрень с тобой, ты"]
         ends = ["!!!!", "!", ""]
         start = random.choice(starts)
         adjective_start = random.choice(adjectives_start)

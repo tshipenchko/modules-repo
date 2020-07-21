@@ -26,11 +26,11 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class UrbanDictionaryMod(loader.Module):
-    """Define word meaning using UrbanDictionary."""
+    """Узнайте значение слова, используя UrbanDictionary."""
     strings = {"name": "Urban Dictionary",
-               "provide_word": "<b>Provide a word(s) to define.</b>",
-               "def_error": "<b>Couldn't find definition for that.</b>",
-               "result": "<b>Text</b>: <code>{}</code>\n<b>Meaning</b>: <code>{}\n<b>Example</b>: <code>{}</code>"}
+               "provide_word": "<b>Укажите слово/словаа для определения.</b>",
+               "def_error": "<b>Не могу найти определение для этого.</b>",
+               "result": "<b>Текст</b>: <code>{}</code>\n<b>Значение</b>: <code>{}\n<b>Например</b>: <code>{}</code>"}
 
     def __init__(self):
         self.urban = asyncurban.UrbanDictionary()
@@ -38,8 +38,8 @@ class UrbanDictionaryMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def urbancmd(self, message):
-        """Define word meaning. Usage:
-            .urban <word(s)>"""
+        """Определите значение слова. Использование:
+            .urban <слово/слова>"""
 
         args = utils.get_args_raw(message)
 

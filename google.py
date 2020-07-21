@@ -27,17 +27,17 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class GoogleSearchMod(loader.Module):
-    """Делает поиск в Google"""
-    strings = {"name": "Google Поиск",
-               "no_term": "<b>Нечего гуглить</b>",
-               "no_results": "<b>Не могу найти ничего про</b> <code>{}</code> <b>в Google</b>",
-               "results": "<b>Вот, что я нашел в Google про</b> <code>{}</code>:\n\n",
+    """Сделайте поиск в Google прямо в чате!"""
+    strings = {"name": "Google Search",
+               "no_term": "<b>Я не могу загуглить то, чего нет!</b>",
+               "no_results": "<b>Не смог найти ничего о</b> <code>{}</code> <b>в Google</b>",
+               "results": "<b>Это всё, что я нашел в Google по запросу</b> <code>{}</code>:\n\n",
                "result": "<a href='{}'>{}</a>\n\n<code>{}</code>\n"}
 
     @loader.unrestricted
     @loader.ratelimit
     async def googlecmd(self, message):
-        """Показывает результаты поиска в Google"""
+        """Показывает результаты поиска в Google."""
         text = utils.get_args_raw(message.message)
         if not text:
             text = (await message.get_reply_message()).message

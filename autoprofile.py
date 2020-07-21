@@ -34,9 +34,9 @@ else:
 
 @loader.tds
 class AutoProfileMod(loader.Module):
-    """Automatic stuff for your profile :P"""
+    """Автоматические работа вашего профиля :P"""
     strings = {"name": "Automatic Profile",
-               "missing_pil": "<b>You don't have Pillow installed</b>",
+               "missing_pil": "<b>У вас не установлен модуль "Pillow"</b>",
                "missing_pfp": "<b>You don't have a profile picture to rotate</b>",
                "invalid_args": "<b>Missing parameters, please read the docs</b>",
                "invalid_degrees": "<b>Invalid number of degrees to rotate, please read the docs</b>",
@@ -66,11 +66,11 @@ class AutoProfileMod(loader.Module):
         self.client = client
 
     async def autopfpcmd(self, message):
-        """Rotates your profile picture every 60 seconds with x degrees, usage:
-           .autopfp <degrees> <remove previous (last pfp)>
+        """Поворот изображения профиля (аватарки) каждые 60 секунд на x градусов, использование:
+           .autopfp <градусы> <удалить предыдущего (последнее изображение)>
 
-           Degrees - 60, -10, etc
-           Remove last pfp - True/1/False/0, case sensitive"""
+           Градусы - 60, -10, и т.д.
+           Удаление последнего изображения - True/1/False/0, чувствительный к регистру"""
 
         if not pil_installed:
             return await utils.answer(message, self.strings("missing_pil", message))
@@ -117,7 +117,7 @@ class AutoProfileMod(loader.Module):
                 await asyncio.sleep(60)
 
     async def stopautopfpcmd(self, message):
-        """Stop autobio cmd."""
+        """Остановить автобио CMD."""
 
         if self.pfp_enabled is False:
             return await utils.answer(message, self.strings("pfp_not_enabled", message))
@@ -131,8 +131,8 @@ class AutoProfileMod(loader.Module):
             await utils.answer(message, self.strings("pfp_disabled", message))
 
     async def autobiocmd(self, message):
-        """Automatically changes your account's bio with current time, usage:
-            .autobio '<message, time as {time}>'"""
+        """Автоматически изменяет биографию вашего аккаунта в зависимости от текущего времени и использование:
+            .autobio '<сообщение, время как {время}>'"""
 
         msg = utils.get_args(message)
         if len(msg) != 1:
@@ -155,7 +155,7 @@ class AutoProfileMod(loader.Module):
             await asyncio.sleep(60)
 
     async def stopautobiocmd(self, message):
-        """Stop autobio cmd."""
+        """Остановить автобио CMD."""
 
         if self.bio_enabled is False:
             return await utils.answer(message, self.strings("bio_not_enabled", message))
@@ -166,8 +166,8 @@ class AutoProfileMod(loader.Module):
             await self.client(functions.account.UpdateProfileRequest(about=self.raw_bio.format(time="")))
 
     async def autonamecmd(self, message):
-        """Automatically changes your Telegram name with current time, usage:
-            .autoname '<message, time as {time}>'"""
+        """Автоматически меняет ваше имя в Telegram с текущим временем, использование:
+            .autoname '<сообщение, время как {время}>'"""
 
         msg = utils.get_args(message)
         if len(msg) != 1:
@@ -190,7 +190,7 @@ class AutoProfileMod(loader.Module):
             await asyncio.sleep(60)
 
     async def stopautonamecmd(self, message):
-        """ Stop autoname cmd."""
+        """ Остановить автоимя CMD."""
 
         if self.name_enabled is False:
             return await utils.answer(message, self.strings("name_not_enabled", message))
@@ -203,8 +203,8 @@ class AutoProfileMod(loader.Module):
             ))
 
     async def delpfpcmd(self, message):
-        """ Remove x profile pic(s) from your profile.
-        .delpfp <pfps count/unlimited - remove all>"""
+        """ Удалить x фото профиля из вашего профиля.
+        .delpfp <pfps count/unlimited - удалить все>"""
 
         args = utils.get_args(message)
         if not args:

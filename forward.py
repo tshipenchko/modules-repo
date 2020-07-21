@@ -24,13 +24,13 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class ForwardMod(loader.Module):
     """Пересылает сообщения"""
-    strings = {"name": "Переслать сообщения",
-               "error": "<b>Неправильный чат назначения</b>",
-               "done": "<b>Переслал все сообщения</b>"}
+    strings = {"name": "Forwarding",
+               "error": "<b>Неверный чат для пересылки</b>",
+               "done": "<b>Переадресация всех сообщений</b>"}
 
     async def fwdallcmd(self, message):
-        """.fwdall <user_id>
-           Переслать все сообщения из чата"""
+        """.fwdall <пользователю>
+           Пересылает все сообщения в чат"""
         try:
             user = await message.client.get_input_entity(utils.get_args(message)[0])
         except ValueError:

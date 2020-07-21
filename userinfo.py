@@ -24,25 +24,25 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class UserInfoMod(loader.Module):
-    """Tells you about people"""
+    """Рассказывает о людях"""
     strings = {"name": "User Info",
-               "first_name": "First name: <code>{}</code>",
-               "last_name": "\nLast name: <code>{}</code>",
+               "first_name": "Имя: <code>{}</code>",
+               "last_name": "\nФамилия: <code>{}</code>",
                "id": "\nID: <code>{}</code>",
-               "bio": "\nBio: <code>{}</code>",
-               "restricted": "\nRestricted: <code>{}</code>",
-               "deleted": "\nDeleted: <code>{}</code>",
-               "bot": "\nBot: <code>{}</code>",
-               "verified": "\nVerified: <code>{}</code>",
-               "dc_id": "\nDC ID: <code>{}</code>",
-               "find_error": "<b>Couldn't find that user.</b>",
-               "no_args_or_reply": "<b>No args or reply was provided.</b>",
-               "provide_user": "Provide a user to locate",
-               "searching_user": "Searching for user...",
-               "cannot_find": "Can't find user.",
+               "bio": "\nБио: <code>{}</code>",
+               "restricted": "\nОграничен: <code>{}</code>",
+               "deleted": "\nУдалён: <code>{}</code>",
+               "bot": "\nБот: <code>{}</code>",
+               "verified": "\nПодтверждён: <code>{}</code>",
+               "dc_id": "\nДата-Центр ID: <code>{}</code>",
+               "find_error": "<b>Не удалось найти этого пользователя.</b>",
+               "no_args_or_reply": "<b>Никаких аргументов или ответа предоставлено не было.</b>",
+               "provide_user": "Предоставьте пользователя для поиска информации",
+               "searching_user": "Собираю информацию о пользователе...",
+               "cannot_find": "Не могу найти пользователя.",
                "permalink_txt": "<a href='tg://user?id={uid}'>{txt}</a>",
-               "permalink_uid": "<a href='tg://user?id={uid}'>Permalink to {uid}</a>",
-               "encode_cfg_doc": "Encode unicode characters"}
+               "permalink_uid": "<a href='tg://user?id={uid}'>Перма-линк: {uid}</a>",
+               "encode_cfg_doc": "Кодировать символы Юникода"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("ENCODE", False, lambda m: self.strings("encode_cfg_doc", m))
@@ -55,7 +55,7 @@ class UserInfoMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def userinfocmd(self, message):
-        """Use in reply to get user info"""
+        """Используйте в ответ, чтобы получить информацию о пользователе"""
         if message.is_reply:
             full = await self.client(GetFullUserRequest((await message.get_reply_message()).from_id))
         else:
@@ -83,7 +83,7 @@ class UserInfoMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def permalinkcmd(self, message):
-        """Get permalink to user based on ID or username"""
+        """Получить постоянную ссылку на пользователя на основе идентификатора или имени пользователя"""
         args = utils.get_args(message)
         if len(args) < 1:
             await utils.answer(message, self.strings("provide_user", message))
