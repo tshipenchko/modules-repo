@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class PMLogMod(loader.Module):
     """Записывает нежелательные личные сообщения в канал"""
-    strings = {"name": "PM Logger",
+    strings = {"name": "ПМ Логгер",
                "start": "<b>Ваш разговор сейчас записывается</b>",
                "not_pm": "<b>Вы не можете записать разговор группы</b>",
                "stopped": "<b>Ваш разговор больше не записывается</b>",
@@ -37,7 +37,7 @@ class PMLogMod(loader.Module):
         self.config = loader.ModuleConfig("LOG_GROUP", None, lambda m: self.strings("log_group_cfg_doc", m))
 
     async def logpmcmd(self, message):
-        """Начинается запись разговора"""
+        """Начинает запись разговора"""
         if not message.is_private or message.to_id.user_id == (await message.client.get_me(True)).user_id:
             await utils.answer(message, self.strings("not_pm", message))
             return

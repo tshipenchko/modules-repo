@@ -28,13 +28,13 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class MockMod(loader.Module):
     """ВыСмЕиВаНиЕ лЮдЕй))0)"""
-    strings = {"name": "Memes",
+    strings = {"name": "Мемы",
                "mock_args": "<b>ОтВеТьТе На СоОбЩеНиЕ, чТоБы ВыСмЕяТь ЕгО (иЛи ВвЕдИтЕ сОоБщЕнИе ПоСлЕ кОмАнДы)</b>",
                "figlet_args": "<b>Укажите шрифт и текст для рендеринга с помощью figlet</b>",
                "no_font": "<b>Шрифт не найден</b>",
                "uwu_args": "<b>Мне нужен текст для nyeko.</b>",
                "clap_args": "<b>Ха-ха, я не хлопаю без текста!",
-               "vapor_args": "<b>Вы не можете ничего испарять, не так ли?</b>",
+               "vapor_args": "<b>Вы не можете ничего испарять...</b>",
                "shout_args": "<b>Вы не можете кричать без текста.</b>"}
 
     @loader.unrestricted

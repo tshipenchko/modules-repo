@@ -34,26 +34,26 @@ else:
 
 @loader.tds
 class AutoProfileMod(loader.Module):
-    """Автоматические работа вашего профиля :P"""
-    strings = {"name": "Automatic Profile",
-               "missing_pil": "<b>У вас не установлен модуль "Pillow"</b>",
-               "missing_pfp": "<b>You don't have a profile picture to rotate</b>",
-               "invalid_args": "<b>Missing parameters, please read the docs</b>",
-               "invalid_degrees": "<b>Invalid number of degrees to rotate, please read the docs</b>",
-               "invalid_delete": "<b>Please specify whether to delete the old pictures or not</b>",
-               "enabled_pfp": "<b>Enabled profile picture rotation</b>",
-               "pfp_not_enabled": "<b>Profile picture rotation is not enabled</b>",
-               "pfp_disabled": "<b>Profile picture rotation disabled</b>",
-               "missing_time": "<b>Time was not specified in bio</b>",
-               "enabled_bio": "<b>Enabled bio clock</b>",
-               "bio_not_enabled": "<b>Bio clock is not enabled</b>",
-               "disabled_bio": "<b>Disabled bio clock</b>",
-               "enabled_name": "<b>Enabled name clock</b>",
-               "name_not_enabled": "<b>Name clock is not enabled</b>",
-               "disabled_name": "<b>Name clock disabled</b>",
-               "how_many_pfps": "<b>Please specify how many profile pictures should be removed</b>",
-               "invalid_pfp_count": "<b>Invalid number of profile pictures to remove</b>",
-               "removed_pfps": "<b>Removed {} profile pic(s)</b>"}
+    """Автоматическое управление вашим профилем :P"""
+    strings = {"name": "Авто-профиль",
+               "missing_pil": "<b>У вас не установлен модуль Pillow</b>",
+               "missing_pfp": "<b>У вас нет изображения профиля для вращения</b>",
+               "invalid_args": "<b>Отсутствуют параметры, пожалуйста, прочитайте документацию </b>",
+               "invalid_degrees": "<b>Неверное значение градусов, пожалуйста, прочитайте документацию</b>",
+               "invalid_delete": "<b>Пожалуйста, укажите, удалять старые фотографии или нет</b>",
+               "enabled_pfp": "<b>Включен поворот изображения профиля</b>",
+               "pfp_not_enabled": "<b>Вращение изображения профиля не включено</b>",
+               "pfp_disabled": "<b>Поворот изображения профиля отключен</b>",
+               "missing_time": "<b>Время в био не указано</b>",
+               "enabled_bio": "<b>Включены био часы</b>",
+               "bio_not_enabled": "<b>Био часы не включены</b>",
+               "disabled_bio": "<b>Био часы для инвалидов</b>",
+               "enabled_name": "<b>Включены часы в имени</b>",
+               "name_not_enabled": "<b>Часы в имени не включены</b>",
+               "disabled_name": "<b>Часы в имени выключены</b>",
+               "how_many_pfps": "<b>Пожалуйста, укажите, сколько фотографий профиля должно быть удалено</b>",
+               "invalid_pfp_count": "<b>Неверное количество фотографий профиля для удаления</b>",
+               "removed_pfps": "<b>Удалено {} фотографий профиля</b>"}
 
     def __init__(self):
         self.bio_enabled = False
@@ -67,7 +67,7 @@ class AutoProfileMod(loader.Module):
 
     async def autopfpcmd(self, message):
         """Поворот изображения профиля (аватарки) каждые 60 секунд на x градусов, использование:
-           .autopfp <градусы> <удалить предыдущего (последнее изображение)>
+           .autopfp <градусы> <True/1/False/0>
 
            Градусы - 60, -10, и т.д.
            Удаление последнего изображения - True/1/False/0, чувствительный к регистру"""
@@ -117,7 +117,7 @@ class AutoProfileMod(loader.Module):
                 await asyncio.sleep(60)
 
     async def stopautopfpcmd(self, message):
-        """Остановить автобио CMD."""
+        """Остановка вращения аватарки"""
 
         if self.pfp_enabled is False:
             return await utils.answer(message, self.strings("pfp_not_enabled", message))
@@ -132,7 +132,7 @@ class AutoProfileMod(loader.Module):
 
     async def autobiocmd(self, message):
         """Автоматически изменяет биографию вашего аккаунта в зависимости от текущего времени и использование:
-            .autobio '<сообщение, время как {время}>'"""
+            .autobio '<сообщение, время как {time}>'"""
 
         msg = utils.get_args(message)
         if len(msg) != 1:
@@ -155,7 +155,7 @@ class AutoProfileMod(loader.Module):
             await asyncio.sleep(60)
 
     async def stopautobiocmd(self, message):
-        """Остановить автобио CMD."""
+        """Остановка автобио"""
 
         if self.bio_enabled is False:
             return await utils.answer(message, self.strings("bio_not_enabled", message))
@@ -167,7 +167,7 @@ class AutoProfileMod(loader.Module):
 
     async def autonamecmd(self, message):
         """Автоматически меняет ваше имя в Telegram с текущим временем, использование:
-            .autoname '<сообщение, время как {время}>'"""
+            .autoname '<сообщение, время как {time}>'"""
 
         msg = utils.get_args(message)
         if len(msg) != 1:
@@ -190,7 +190,7 @@ class AutoProfileMod(loader.Module):
             await asyncio.sleep(60)
 
     async def stopautonamecmd(self, message):
-        """ Остановить автоимя CMD."""
+        """Остановка часов в имени"""
 
         if self.name_enabled is False:
             return await utils.answer(message, self.strings("name_not_enabled", message))
@@ -203,7 +203,7 @@ class AutoProfileMod(loader.Module):
             ))
 
     async def delpfpcmd(self, message):
-        """ Удалить x фото профиля из вашего профиля.
+        """Удалить n-ное количество фото профиля из вашего профиля.
         .delpfp <pfps count/unlimited - удалить все>"""
 
         args = utils.get_args(message)

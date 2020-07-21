@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class PurgeMod(loader.Module):
     """Удаляет ваши сообщения"""
-    strings = {"name": "Purge",
+    strings = {"name": "Чистка",
                "from_where": "<b>Какие сообщения должны быть удалены?</b>",
                "not_supergroup_bot": "<b>Чистку можно проводить только в супергруппах.</b>",
                "delete_what": "<b>Какое сообщение должно быть удалено?</b>"}

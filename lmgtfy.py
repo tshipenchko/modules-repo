@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class LMGTFYMod(loader.Module):
-    """Использует Google за вас, потому что вы слишком ленивы, чтобы сделать это самостоятельно."""
-    strings = {"name": "LetMeGoogleThatForYou",
-               "result": "<b>Вот, помоги себе.</b>\n<a href='{}'>{}</a>",
+    """Использует Google за того, кто слишком ленивый, чтобы сделать это самостоятельно."""
+    strings = {"name": "LMGTFY",
+               "result": "<b>А ведь сложно же самому поискать, да? Держи:</b>\n<a href='{}'>{}</a>",
                "default": "Как пользоваться поисковой системой Google?"}
 
     @loader.unrestricted

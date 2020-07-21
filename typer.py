@@ -34,13 +34,13 @@ class TyperMod(loader.Module):
                "delay_text_cfg_doc": "Как долго задерживать показ текста?"}
 
     def __init__(self):
-        self.config = loader.ModuleConfig("TYPE_CHAR", "▒", lambda m: self.strings("type_char_cfg_doc", m),
+        self.config = loader.ModuleConfig("TYPE_CHAR", "|", lambda m: self.strings("type_char_cfg_doc", m),
                                           "DELAY_TYPER", 0.04, lambda m: self.strings("delay_typer_cfg_doc", m),
                                           "DELAY_TEXT", 0.02, lambda m: self.strings("delay_text_cfg_doc", m))
 
     @loader.ratelimit
     async def typecmd(self, message):
-        """.type <message>"""
+        """.type <сообщение>"""
         a = utils.get_args_raw(message)
         if not a:
             await utils.answer(message, self.strings("no_message", message))
@@ -50,10 +50,10 @@ class TyperMod(loader.Module):
         for c in a:
             m += self.config["TYPE_CHAR"]
             message = await update_message(message, m, entities)
-            await asyncio.sleep(0.04)
+            await asyncio.sleep(0.02)
             m = m[:-1] + c
             message = await update_message(message, m, entities)
-            await asyncio.sleep(0.02)
+            await asyncio.sleep(0.01)
 
 
 async def update_message(message, m, entities):

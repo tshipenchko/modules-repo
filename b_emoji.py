@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class BEmojiMod(loader.Module):
     """Бификация"""
-    strings = {"name": "🅱️",
+    strings = {"name": "Би-фикация",
                "replacable_chars_cfg_doc": "Символы, которые можно заменить на 🅱️",
                "no_text": "<b>Тут нечего 🅱️ифицировать</b>"}
 

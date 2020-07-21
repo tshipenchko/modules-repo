@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class LydiaMod(loader.Module):
     """Беседа с роботом вместо человека."""
-    strings = {"name": "Lydia anti-PM",
+    strings = {"name": "Лидия",
                "enable_disable_error_group": "<b>Служба ИИ не может быть"
                " включена или отключена в этом чате. Может быть это не групповой чат?</b>",
                "enable_error_user": "<b>Служба ИИ не может быть"

@@ -21,8 +21,8 @@ from .. import loader, utils
 
 @loader.tds
 class RecentActionsMod(loader.Module):
-    """Читает последние действия"""
-    strings = {"name": "Recent Actions",
+    """Показывает недавние действия в чате"""
+    strings = {"name": "Недавние действия",
                "reply_start": "<b>Ответьте на сообщение, чтобы указать, с чего начать</b>",
                "invalid_chat": "<b>Это не супергруппа или канал</b>",
                "needs_admin": "<b>Необходимы права администратора для чтения удаленных сообщений</b>",

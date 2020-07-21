@@ -29,10 +29,10 @@ logger = logging.getLogger(__name__)
 class AFKMod(loader.Module):
     """Предоставляет сообщение о том, что вы недоступны сейчас"""
     strings = {"name": "AFK",
-               "gone": "<b>Я в AFK режиме.</b>",
-               "back": "<b>Я больше не в AFK режиме.</b>",
-               "afk": "<b>Я в AFK режиме сейчас (уже {}).</b>",
-               "afk_reason": "<b>Я в AFK режиме сейчас (уже {}).\nПричина:</b> <i>{}</i>"}
+               "gone": "<b>Я теперь в AFK.</b>",
+               "back": "<b>Я больше не в AFK.</b>",
+               "afk": "<b>Я сейчас в AFK (уже {}).</b>",
+               "afk_reason": "<b>Я сейчас в AFK (уже {}).\nПричина:</b> <i>{}</i>"}
 
     async def client_ready(self, client, db):
         self._db = db

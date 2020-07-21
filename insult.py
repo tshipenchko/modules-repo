@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class InsultMod(loader.Module):
     """Кричит на людей"""
-    strings = {"name": "Insulter"}
+    strings = {"name": "Обидчик"}
 
     @loader.unrestricted
     async def insultcmd(self, message):

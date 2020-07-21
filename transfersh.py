@@ -34,7 +34,7 @@ def sgen(agen, loop):
 @loader.tds
 class TransferShMod(loader.Module):
     """Загрузить в/из Transfer.sh"""
-    strings = {"name": "transfer.sh support",
+    strings = {"name": "transfer.sh",
                "up_cfg_doc": "URL для загрузки файла.",
                "no_file": "<code>Предоставьте файл для загрузки</code>",
                "uploading": "<code>Загрузка...</code>",

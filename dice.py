@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class DiceMod(loader.Module):
     """Игра в Кости"""
-    strings = {"name": "Dice"}
+    strings = {"name": "Кости"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("POSSIBLE_VALUES", {"": [1, 2, 3, 4, 5, 6],

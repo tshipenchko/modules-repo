@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class InfoMod(loader.Module):
     """Предоставляет системную информацию о компьютере, на котором размещен этот бот"""
-    strings = {"name": "System Info",
+    strings = {"name": "Система",
                "info_title": "<b>Информация о системе</b>",
                "kernel": "<b>Ядро:</b> <code>{}</code>",
                "arch": "<b>Архитектура:</b> <code>{}</code>",

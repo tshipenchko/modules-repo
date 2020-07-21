@@ -39,7 +39,7 @@ warnings.simplefilter("error", Image.DecompressionBombWarning)
 @loader.tds
 class StickersMod(loader.Module):
     """Задачи со стикерами"""
-    strings = {"name": "Stickers",
+    strings = {"name": "Стикеры",
                "stickers_username_cfg_doc": "Модуль для создания стикеров",
                "sticker_size_cfg_doc": "Размер одного стикера",
                "default_sticker_emoji_cfg_doc": "Смайлики для стикеров по умолчанию",

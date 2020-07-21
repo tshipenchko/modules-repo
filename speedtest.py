@@ -32,7 +32,7 @@ class SpeedtestMod(loader.Module):
                "results": "<b>Результаты теста скорости:</b>",
                "results_download": "<b>Скачивание:</b> <code>{}</code> <b>Мбит/c</b>",
                "results_upload": "<b>Выгрузка:</b> <code>{}</code> <b>Мбит/c</b>",
-               "results_ping": "<b>Пинг:</b> <code>{}</code> <b>мсек</b>"}
+               "results_ping": "<b>Пинг:</b> <code>{}</code> <b>мс</b>"}
 
     async def speedtestcmd(self, message):
         """Проверяет вашу скорость интернета"""

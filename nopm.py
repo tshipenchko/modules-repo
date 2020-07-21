@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class AntiPMMod(loader.Module):
     """Запрещает людям отправлять вам нежелательные личные сообщения."""
-    strings = {"name": "Anti PM",
+    strings = {"name": "Анти-ПМ",
                "limit_cfg_doc": "Максимальное количество личных сообщений перед блокировкой пользователя, или же ни одного",
                "who_to_block": "<b>Укажите, кого заблокировать</b>",
                "blocked": ("<b>Я не хочу никаких личных сообщений от</b> <a href='tg://user?id={}'>тебя</a>, "

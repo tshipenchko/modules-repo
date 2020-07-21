@@ -28,18 +28,18 @@ logger = logging.getLogger(__name__)
 class TerminalMod(loader.Module):
     """Запускает команды"""
 
-    strings = {"name": "Terminal",
+    strings = {"name": "Терминал",
                "flood_wait_protect_cfg_doc": "Как долго ждать в секундах между изменениями в командах",
                "what_to_kill": "<b>Ответьте на терминальную команду, чтобы завершить её</b>",
                "kill_fail": "<b>Не удалось убить процесс</b>",
                "killed": "<b>Процесс убит</b>",
                "no_cmd": "<b>В этом сообщении нет команды</b>",
                "running": "<b>Запуск команды</b> <code>{}</code>",
-               "finished": "\n<b>Команда завершилась с кодом возврата</b> <code>{}</code>",
+               "finished": "\n<b>Команда завершилась с кодом </b> <code>{}</code>",
                "stdout": "\n<b>Вывод:</b>\n<code>",
                "stderr": "</code>\n\n<b>Ошибки:</b>\n<code>",
                "end": "</code>",
-               "auth_fail": "<b>Ошибка авторизации, пожалуйста повторите</b>",
+               "auth_fail": "<b>Ошибка авторизации, пожалуйста попробуйте снова</b>",
                "auth_needed": "<a href=\"tg://user?id={}\">Требуется интерактивная аутентификация</a>",
                "auth_msg": ("<b>Пожалуйста, измените это сообщение на пароль</b> "
                             "<code>{}</code> <b>для запуска</b> <code>{}</code>"),
@@ -59,7 +59,7 @@ class TerminalMod(loader.Module):
 
     @loader.owner
     async def aptcmd(self, message):
-        """Быстрый доступ к '.terminal apt'"""
+        """Быстрый доступ к .terminal apt"""
         await self.run_command(message, ("apt " if os.geteuid() == 0 else "sudo -S apt ")
                                + utils.get_args_raw(message) + " -y",
                                RawMessageEditor(message, "apt " + utils.get_args_raw(message),
@@ -123,8 +123,8 @@ class TerminalMod(loader.Module):
             await utils.answer(message, self.strings("no_cmd", message))
 
     async def neofetchcmd(self, message):
-        """Показать статистику системы через neofetch"""
-        await self.run_command(message, "neofetch --stdout", RawMessageEditor(message, "neofetch --stdout",
+        """Отображает системную информацию через neofetch"""
+        await self.run_command(message, 'if [ ! x"" = x"$DYNO" ]; then neofetch --config none --stdout; else neofetch --stdout; fi', RawMessageEditor(message, 'if [ ! x"" = x"$DYNO" ]; then neofetch --config none --stdout; else neofetch --stdout; fi',
                                                                               self.config, self.strings, message))
 
     async def uptimecmd(self, message):
@@ -132,6 +132,11 @@ class TerminalMod(loader.Module):
         await self.run_command(message, "uptime", RawMessageEditor(message, "uptime", self.config,
                                                                    self.strings, message))
 
+    @loader.owner
+    async def memtopcmd(self, message):
+        """Показывает топ 5 самых прожорливых процессов по RAM"""
+        await self.run_command(message, """ps -eo size,pid,user,command | awk '{ hr=$1/1024 ; printf("%13.6f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort -r | head -n 5""", RawMessageEditor(message, """ps -eo size,pid,user,command | awk '{ hr=$1/1024 ; printf("%13.6f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort -r | head -n 5""", self.config,
+                                                       	self.strings, message))
 
 def hash_msg(message):
     return str(utils.get_chat_id(message)) + "/" + str(message.id)

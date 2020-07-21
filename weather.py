@@ -42,7 +42,7 @@ def round_to_sf(n, digits):
 class WeatherMod(loader.Module):
     """Проверяет погоду
        Получить ключ API нужно на https://openweathermap.org/appid"""
-    strings = {"name": "Weather",
+    strings = {"name": "Погода",
                "provide_api": "<b>Пожалуйста, предоставьте ключ API через режим конфигурации.</b>",
                "invalid_temp_units": "<b>Недопустимые единицы измерения температуры. Пожалуйста, перенастройте модуль.</b>",
                "doc_default_loc": "Идентификатор города OpenWeatherMap",

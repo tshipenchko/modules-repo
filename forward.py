@@ -24,12 +24,12 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class ForwardMod(loader.Module):
     """Пересылает сообщения"""
-    strings = {"name": "Forwarding",
+    strings = {"name": "Форвардинг",
                "error": "<b>Неверный чат для пересылки</b>",
-               "done": "<b>Переадресация всех сообщений</b>"}
+               "done": "<b>Все сообщения пересланы</b>"}
 
     async def fwdallcmd(self, message):
-        """.fwdall <пользователю>
+        """.fwdall <пользователь>
            Пересылает все сообщения в чат"""
         try:
             user = await message.client.get_input_entity(utils.get_args(message)[0])

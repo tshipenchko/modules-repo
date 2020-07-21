@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 class QuotesMod(loader.Module):
     """Цитировать сообщение."""
     strings = {
-        "name": "Quotes",
+        "name": "Цитаты",
         "api_token_cfg_doc": "Ключ API/Токен для Цитат.",
         "api_url_cfg_doc": "API URL для Цитат.",
         "username_colors_cfg_doc": "Цвета имени пользователя",

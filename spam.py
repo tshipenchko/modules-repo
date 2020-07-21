@@ -25,9 +25,9 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class SpamMod(loader.Module):
     """Очень эффективно раздражает людей"""
-    strings = {"name": "Spam",
+    strings = {"name": "Спам",
                "need_spam": "<b>Ты.. что? Мне нужно что-то для спама.</b>",
-               "spam_urself": "<b>Спамь самостоятельно.</b>",
+               "spam_urself": "<b>Себя поспамь.</b>",
                "nice_number": "<b>Хороший номер братан.</b>",
                "much_spam": "<b>Хаха, много спама.</b>"}
 
@@ -59,7 +59,7 @@ class SpamMod(loader.Module):
         await message.delete()
         if count > 20:
             # Be kind to other people
-            sleepy = 2
+            sleepy = 0
         else:
             sleepy = 0
         i = 0

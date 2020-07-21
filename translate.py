@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class TranslateMod(loader.Module):
     """Переводчик"""
-    strings = {"name": "Translator",
+    strings = {"name": "Переводчик",
                "translated": "<b>C: </b><code>{from_lang}</code>"
                "\n<b>На: </b><code>{to_lang}</code>\n\n{output}",
                "invalid_text": "Неверный текст для перевода",

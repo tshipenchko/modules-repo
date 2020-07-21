@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class BanMod(loader.Module):
-    """Задачи группового администрирования"""
-    strings = {"name": "Administration",
+    """Задачи администрирования группой"""
+    strings = {"name": "Администрирование",
                "ban_not_supergroup": "<b>Я не могу забанить кого-то, если он не в супергруппе!</b>",
                "unban_not_supergroup": "<b>Я не могу снять бан с кого-либо, если он не забанен в супергруппе!</b>",
                "kick_not_group": "<b>Я не могу исключить кого-то, если он не в группе!</b>",
@@ -37,19 +37,19 @@ class BanMod(loader.Module):
                "ban_none": "<b>Я не могу никого забанить, не так ли?</b>",
                "unban_none": "<b>Мне нужен кто-то, чтобы разбанить его.</b>",
                "kick_none": "<b>Мне нужен кто-то, чтобы исключить его из чата.</b>",
-               "promote_none": "<b>Я не могу никому повышать права, не так ли?</b>",
-               "demote_none": "<b>Я не могу никому понизить права, не так ли?</b>",
-               "mute_none": "<b>Я не могу никого заглушить, не так ли?</b>",
-               "unmute_none": "<b>Я не могу никому вернуть голос, не так ли?</b>",
+               "promote_none": "<b>Кому мне повысить права?</b>",
+               "demote_none": "<b>Кому мне понизить права?</b>",
+               "mute_none": "<b>Кого мне заглушить?</b>",
+               "unmute_none": "<b>С кого мне снять мут?</b>",
                "who": "<b>Кто это, черт возьми?</b>",
                "not_admin": "<b>Разве я админ здесь?</b>",
                "banned": "<code>{}</code> <b>забанен в чате!</b>",
                "unbanned": "<code>{}</code> <b>разбанен в чате!</b>",
-               "kicked": "<code>{}</code> <b>исключён с чата!</b>",
+               "kicked": "<code>{}</code> <b>исключён из чата!</b>",
                "promoted": "<code>{}</code> <b>теперь с правами администратора!</b>",
                "demoted": "<code>{}</code> <b>теперь без прав администратора!</b>",
                "muted": "<code>{}</code> <b>заглушён!</b>",
-               "unmuted": "<code>{}</code> <b>вернул себе возможность писать!</b>"}
+               "unmuted": "С <code>{}</code> <b>снят мут!</b>"}
 
     @loader.group_admin_ban_users
     @loader.ratelimit
@@ -169,7 +169,7 @@ class BanMod(loader.Module):
 
     @loader.group_admin_add_admins
     async def demotecmd(self, message):
-        """Лишает прав администратора указанной группы администраторов."""
+        """Лишает прав администратора указанному пользователю."""
         if message.is_reply:
             user = await utils.get_user(await message.get_reply_message())
         else:
@@ -225,7 +225,7 @@ class BanMod(loader.Module):
                                                      message).format(utils.escape_html(ascii(user.first_name))))
 
     async def unmutecmd(self, message):
-        """Вернуть голос пользователю в группе."""
+        """Снимает мут с пользователя"""
         if not isinstance(message.to_id, PeerChannel):
             return await utils.answer(message, self.strings("unmute_not_supergroup", message))
         if message.is_reply:

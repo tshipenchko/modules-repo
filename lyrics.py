@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class LyricsMod(loader.Module):
-    """Поет песни"""
-    strings = {"name": "Lyrics",
+    """Ищет тексты песен"""
+    strings = {"name": "Текст песни",
                "genius_api_token_doc": "Токен API LyricsGenius на http://genius.com/api-clients",
                "invalid_syntax": "<b>Пожалуйста, укажите песню и исполнителя.</b>",
                "song_not_found": "<b>Песня не найдена</b>",

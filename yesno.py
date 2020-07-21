@@ -21,7 +21,7 @@ import random
 @loader.tds
 class YesNoMod(loader.Module):
     """Помогает вам сделать важный жизненный выбор"""
-    strings = {"name": "YesNo",
+    strings = {"name": "ДаНет",
                "yes_words_cfg_doc": "*Да* слова",
                "no_words_cfg_doc": "*Нет* слова"}
 

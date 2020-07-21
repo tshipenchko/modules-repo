@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 @loader.tds
 class QuickTypeMod(loader.Module):
     """Удаляет ваше сообщение после тайм-аута"""
-    strings = {"name": "Quick Typer",
+    strings = {"name": "QuickTyper",
                "need_something": "Ты.. что? Мне нужно что-то напечатать",
                "lazy_af": "Иди набери сам бля",
                "nice_number": "Хороший номер братан"}
