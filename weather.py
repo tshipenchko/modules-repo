@@ -40,16 +40,16 @@ def round_to_sf(n, digits):
 
 @loader.tds
 class WeatherMod(loader.Module):
-    """Checks the weather
-       Get an API key at https://openweathermap.org/appid"""
+    """Проверяет погоду
+       Получить ключ API нужно на https://openweathermap.org/appid"""
     strings = {"name": "Weather",
-               "provide_api": "<b>Please provide an API key via the configuration mode.</b>",
-               "invalid_temp_units": "<b>Invalid temperature units provided. Please reconfigure the module.</b>",
-               "doc_default_loc": "OpenWeatherMap City ID",
-               "doc_api_key": "API Key from https://openweathermap.org/appid",
-               "doc_temp_units": "Temperature unit as English",
-               "result": "<b>Weather in {loc} is {w} with a high of {high} and a low"
-                         " of {low}, averaging at {avg} with {humid}% humidity and a {ws}mph {wd} wind.</b>",
+               "provide_api": "<b>Пожалуйста, предоставьте ключ API через режим конфигурации.</b>",
+               "invalid_temp_units": "<b>Недопустимые единицы измерения температуры. Пожалуйста, перенастройте модуль.</b>",
+               "doc_default_loc": "Идентификатор города OpenWeatherMap",
+               "doc_api_key": "Ключ API на https://openweathermap.org/appid",
+               "doc_temp_units": "Единица измерения температуры на английском языке",
+               "result": "<b>Погода в {loc} - {w} с максимумом {high} и минимумом"
+                         " {low}, в среднем {avg} с {humid} влажностью и ветром {ws}mph {wd}.</b>",
                "unknown": "unknown"}
 
     def __init__(self):
@@ -67,7 +67,7 @@ class WeatherMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def weathercmd(self, message):
-        """.weather [location]"""
+        """.weather [локация]"""
         if self._owm is None:
             await utils.answer(message, self.strings("provide_api", message))
             return

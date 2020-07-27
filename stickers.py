@@ -38,21 +38,21 @@ warnings.simplefilter("error", Image.DecompressionBombWarning)
 
 @loader.tds
 class StickersMod(loader.Module):
-    """Tasks with stickers"""
+    """Задачи со стикерами"""
     strings = {"name": "Stickers",
-               "stickers_username_cfg_doc": "Bot to use to create stickers",
-               "sticker_size_cfg_doc": "The size of one sticker",
-               "default_sticker_emoji_cfg_doc": "The emoji to use for stickers by default",
-               "what_pack": "<b>You must specify which pack you would like to add the sticker to</b>",
-               "what_photo": "<b>Reply to a sticker or photo to add it to your sticker pack</b>",
-               "not_animated_pack": "<b>Animated stickers can only be added to animated packs</b>",
-               "internal_error": "<b>Something went wrong while adding the sticker</b>",
-               "bad_emojis": "<b>The emoji(s) you gave are invalid</b>",
-               "animated_pack": "<b>Non-animated stickers cannot be added to animated packs</b>",
-               "new_pack": "<b>Create a sticker pack first</b>",
-               "pack_full": "<b>That pack is full. Delete some stickers or try making a new pack</b>",
-               "added": "<b>Sticker added to</b> <a href='{}'>pack</a><b>!</b>",
-               "bad_animated_sticker": "<b>Reply to an animated sticker to convert to a GIF</b>"}
+               "stickers_username_cfg_doc": "Модуль для создания стикеров",
+               "sticker_size_cfg_doc": "Размер одного стикера",
+               "default_sticker_emoji_cfg_doc": "Смайлики для стикеров по умолчанию",
+               "what_pack": "<b>Вы должны указать, в какой пак вы хотите добавить стикер</b>",
+               "what_photo": "<b>Ответьте на стикер или фотографию, чтобы добавить ее в свой пак</b>",
+               "not_animated_pack": "<b>Анимированные стикеры можно добавлять только в анимированные паки</b>",
+               "internal_error": "<b>Что-то пошло не так при добавлении стикера</b>",
+               "bad_emojis": "<b>Такого смайлика, который вы поставили, не существует</b>",
+               "animated_pack": "<b>Не анимированные стикеры не могут быть добавлены в анимированные паки</b>",
+               "new_pack": "<b>Сначала создайте пак для стикеров</b>",
+               "pack_full": "<b>Этот пак переполнен. Удалите несколько стикеров с этого пака или попробуйте сделать новый</b>",
+               "added": "<b>Стикер добавлен в</b> <a href='{}'>pack</a><b>!</b>",
+               "bad_animated_sticker": "<b>Ответьте на анимированный стикер, чтобы преобразовать его в GIF</b>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("STICKERS_USERNAME", "Stickers",
@@ -63,9 +63,9 @@ class StickersMod(loader.Module):
         self._lock = asyncio.Lock()
 
     async def kangcmd(self, message):  # noqa: C901 # TODO: split this into helpers
-        """Use in reply or with an attached media:
-           .kang <pack name> [emojis]
-           If pack is not matched the most recently created will be used instead"""
+        """Используйте в ответ на медиа:
+           .kang <название пака> [смайлик]
+           Если пак не соответствует, будет использован последний созданный."""
         args = utils.get_args(message)
         if len(args) not in (1, 2):
             logger.debug("wrong args len(%s) or bad args(%s)", len(args), args)
@@ -273,7 +273,7 @@ class StickersMod(loader.Module):
         await utils.answer(message, self.strings("added", message).format(packurl))
 
     async def gififycmd(self, message):
-        """Convert the replied animated sticker to a GIF"""
+        """Преобразовать анимированный стикер в GIF"""
         args = utils.get_args(message)
         fps = 5
         quality = 256

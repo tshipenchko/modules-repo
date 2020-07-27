@@ -25,56 +25,56 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class MiscMod(loader.Module):
-    """Miscellaneous tasks"""
-    strings = {"name": "Miscellaneous"}
+    """Разное и всякое"""
+    strings = {"name": "Misc"}
 
     def __init__(self):
-        self.config = mc("VOLTE_TEXT", "To be fair, you have to have a very high IQ to understand VoLTE. "
-                         + "The technology is extremely subtle, and without a solid grasp of cell towers most "
-                         + "of the signal will go over a typical user’s head. There's also Mukesh Ambani’s "
-                         + "omniscient outlook, which is deftly woven into his characterisation - his personal "
-                         + "philosophy draws heavily from Indian literature, for instance. The users understand "
-                         + "this stuff; they have the intellectual capacity to truly appreciate the depths of "
-                         + "this technology, to realize that they're not just powerful- they say something deep "
-                         + "about LIFE. As a consequence people who dislike reliance jio truly ARE idiots- of "
-                         + "course they wouldn't appreciate, for instance, the humour in Mukesh’s existencial "
-                         + "catchphrase \"does this roms supports volte????” which itself is a cryptic reference "
-                         + "to Turgenev's Russian epic Fathers and Sons I'm smirking right now just imagining one "
-                         + "of those addlepated simpletons scratching their heads in confusion as Mukesh Ambani’s "
-                         + "genius unfolds itself on their phone screens. What fools... how I pity them. 😂 And yes "
-                         + "by the way, I DO have a reliance jio tattoo. And no, you cannot see it. It's for the "
-                         + "ladies' eyes only- And even they have to demonstrate that they're phones even supports "
-                         + "voltes beforehand.\"", "", "HUAWEI_TEXT", "Do you even know what a huawei is, i bet you do"
-                         + "nt, well i made it with one goal, to make a very nice looking ui so i can collect peoples "
-                         + "data(nudes) and send them to my indian friends, i bet you are jealous😂😂, and i bet you "
-                         + "dont even know how to write a proper OS, well I do, I hired 200 Africian Slaves to work on "
-                         + "my new project called HongmengOS, it has 90% better performance than android, and it can "
-                         + "even run android apps😍. Infact donald trump almost fucked me in the ass one time, but "
-                         + "when I promised to share the \"data\" with him, and send him all the nudes captured from "
-                         + "Clinton's CCTV, he let me and my company off the hook, imagine a blonde looking at your "
-                         + "dick😂😂, I mean, its not like ive already got yours already, infact I'm working on a "
-                         + "new EMUI update to every huawei phone to make it auto-capture every time you jerk off "
-                         + "😋, even Tim Cook wants take the hua-way of collecting data, but I bet he doesnt even "
-                         + "know how to use AI to capture good nudes. But there is more, I encrypt the nudes on your "
-                         + "device so you cant access them, but we can😜, Also take note that I already know your "
-                         + "bank details and I'm selling them to tech support scammers, and by the huaway, EMUI 9.2 "
-                         + "will have a new A.I in the camera app to enhance dick pics, but you need to agree to "
-                         + "the new privacy policy of sharing the nudes you capture to us, for \"product improvement\"",
-                         "", "F_LENGTHS", [5, 1, 1, 4, 1, 1, 1], "List to customise size of F shape", "BLUE_TEXT",
-                         "/BLUE /TEXT\n/MUST /CLICK\n/I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS",
-                         "Blue text must click!11!!1!1")
+        self.config = mc("VOLTE_TEXT", "Если быть честным, вы должны иметь очень высокий IQ, чтобы понять VoLTE. "
+                         + "Технология очень тонкая, и без четкого захвата вышек сотовой связи большая "
+                         + "часть сигнала будет проходить через голову типичного пользователя. Есть также всезнающий "
+                         + "взгляд Мукеша Амбани, который искусно вплетен в его характеристику - например, "
+                         + "его личная философия во многом опирается на индийскую литературу. Пользователи понимают "
+                         + "этот материал; у них есть интеллектуальный потенциал, чтобы по-настоящему оценить глубины "
+                         + "этой технологии, понять, что они не просто мощные - они говорят что-то глубокое "
+                         + "о ЖИЗНИ. Как следствие, люди, которые не любят уверенность в себе, действительно являются идиотами - "
+                         + "конечно, они не оценят, например, юмор в экзистенциальной фразе "
+                         + "Мукеша: \"Этот ром поддерживает волю ????” что само по себе является загадочной ссылкой на "
+                         + "русских эпических отцов и сыновей Тургенева, я улыбаюсь прямо сейчас, просто воображая, как один "
+                         + "из этих запутанных простаков ломает голову в замешательстве, когда гений Мукеша Амбани "
+                         + "раскрывается на экранах их телефонов. Какие дураки... как мне их жаль. 😂 И да, "
+                         + "кстати, у меня действительно есть татуировка уверенности джио. И нет, вы не можете видеть это. Это только для "
+                         + "дамских глаз. И даже они должны продемонстрировать, что их телефоны заранее "
+                         + "поддерживают Voltes.\n\n@Dead_Lucifer_666", "", "HUAWEI_TEXT", "Знаете ли вы, что такое huawei, держу пари, "
+                         + "вы этого в душе не ебёте, ну, я спросил это просто так, вообщем я хочу создать очень красивый интерфейс, чтобы я мог собирать данные о "
+                         + "людях (интимОчки) и отправлять их моим похотливым(вхвхвх) друзьям, держу пари, что вы ревнивый😂😂, и я держу пари, "
+                         + "что вы даже не знаете, как написать правильную ОС, ну, я сделал так, я нанял 200 африканских рабов для работы над "
+                         + "моим новым проектом под названием LuciferOS, он имеет производительность на 90% лучше, "
+                         + "чем Android, и на нём даже могут работать приложения для Android😍. Один раз Дональд Трамп довел меня до инфаркта (я ахуел!), но "
+                         + "когда я пообещал поделиться с ним \"данными\" и отправить ему все обнаженные тела, снятые с "
+                         + "CCTV Клинтона, он позволил мне и моей компании сорваться с крючка, представьте себе блондинку, смотрящую на ваш "
+                         + "хуй😎😂, нет, всмысле это не так, я не получал ваш...и или её.. Блять, короче, я работаю над новым"
+                         + "обновлением EMUI для каждого телефона huawei, чтобы он автоматически фиксировал каждый раз, когда вы дрочите "
+                         + "😋, даже Тим Кук хочет взять Hua-way (ахуенный панч, ае) для сбора данных, но держу пари, он даже не "
+                         + "знает, как использовать искусственный интеллект для захвата горячих интимок))0). Но это еще не все, я шифрую сиськи-письки на вашем "
+                         + "устройстве, чтобы вы не могли получить к ним доступ, но я могу😜. Также обратите внимание, что я УЖЕ знаю ваши "
+                         + "банковские реквизиты, и я продаю их мошенникам из службы технической поддержки, и, кстати, EMUI 9.2 "
+                         + "будет иметь новый ИИ в приложении камеры, чтобы улучшать фото, но вы должны согласиться с "
+                         + "новой политикой конфиденциальности, чтобы разделять ебучие интимки (заебало это слово), которые вы предоставили мне для \"улучшения продукта\".\n\n",
+                         "", "F_LENGTHS", [5, 1, 1, 4, 1, 1, 1], "Список, чтобы настроить размер формы F", "BLUE_TEXT",
+                         "/НА /СИНИЙ /ТЕКСТ\n/НАДО /НАЖИМАТЬ\n/Я /БЛЯТЬ /ТУПОЕ /ЖИВОТНОЕ /ЕЩЁ /И /ДАЛЬТОНИК",
+                         "На синий текст надо нажимать!11!!1!1")
 
     def config_complete(self):
         self.name = self.strings["name"]
 
     @loader.unrestricted
     async def voltecmd(self, message):
-        """Use when the bholit just won't work"""
+        """Используйте, когда VoLTE не работает.""" #todo
         await utils.answer(message, self.config["VOLTE_TEXT"])
 
     @loader.unrestricted
     async def fcmd(self, message):
-        """Pays respects"""
+        """Пресс F (уважение)."""
         args = utils.get_args_raw(message)
         if not args:
             r = random.randint(0, 3)
@@ -94,10 +94,10 @@ class MiscMod(loader.Module):
 
     @loader.unrestricted
     async def huaweicmd(self, message):
-        """Use when your country is "investing" in Huawei 5G modems"""
+        """Используйте, когда ваша страна "инвестирует" в модемы Huawei 5G))0)"""
         await utils.answer(message, self.config["HUAWEI_TEXT"])
 
     @loader.unrestricted
     async def btcmd(self, message):
-        """Blue text must click"""
+        """На синий текст надо нажимать."""
         await utils.answer(message, self.config["BLUE_TEXT"])

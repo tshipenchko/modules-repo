@@ -27,19 +27,19 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class MockMod(loader.Module):
-    """mOcKs PeOpLe"""
+    """ВыСмЕиВаНиЕ лЮдЕй))0)"""
     strings = {"name": "Memes",
-               "mock_args": "<b>rEpLy To A mEsSaGe To MoCk It (Or TyPe ThE mEsSaGe AfTeR tHe CoMmAnD)</b>",
-               "figlet_args": "<b>Supply a font and some text to render with figlet</b>",
-               "no_font": "<b>Font not found</b>",
-               "uwu_args": "<b>I nyeed some text fow the nyeko.</b>",
-               "clap_args": "<b>Haha, I don't clap for nothing!",
-               "vapor_args": "<b>You can't vaporize nothing, can you?</b>",
-               "shout_args": "<b>You can't shout nothing.</b>"}
+               "mock_args": "<b>ОтВеТьТе На СоОбЩеНиЕ, чТоБы ВыСмЕяТь ЕгО (иЛи ВвЕдИтЕ сОоБщЕнИе ПоСлЕ кОмАнДы)</b>",
+               "figlet_args": "<b>Укажите шрифт и текст для рендеринга с помощью figlet</b>",
+               "no_font": "<b>Шрифт не найден</b>",
+               "uwu_args": "<b>Мне нужен текст для nyeko.</b>",
+               "clap_args": "<b>Ха-ха, я не хлопаю без текста!",
+               "vapor_args": "<b>Вы не можете ничего испарять...</b>",
+               "shout_args": "<b>Вы не можете кричать без текста.</b>"}
 
     @loader.unrestricted
     async def mockcmd(self, message):
-        """Use in reply to another message or as .mock <text>"""
+        """Используется в ответ на другое сообщение или как .mock <текст>"""
         text = utils.get_args_raw(message.message)
         if len(text) == 0:
             if message.is_reply:
@@ -64,7 +64,7 @@ class MockMod(loader.Module):
 
     @loader.unrestricted
     async def figletcmd(self, message):
-        """.figlet <font> <text>"""
+        """.figlet <шрифт> <текст>"""
         # We can't localise figlet due to a lack of fonts
         args = utils.get_args(message)
         if len(args) < 2:
@@ -84,7 +84,7 @@ class MockMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit  # TODO switch away from regex so this isn't a risk
     async def uwucmd(self, message):
-        """Use in wepwy to anyothew message ow as .uwu <text>"""
+        """Используица в отвтт на дрггое соопщенние или типааа .uwu <текст>"""
         text = utils.get_args_raw(message.message)
         if not text:
             if message.is_reply:
@@ -102,7 +102,7 @@ class MockMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit  # TODO switch away from regex as above
     async def clapcmd(self, message):
-        """Use in reply to another message or as .clap <text>"""
+        """Используется в ответ на другое сообщение или как .clap <текст>"""
         text = utils.get_args_raw(message.message)
         if not text:
             if message.is_reply:
@@ -116,7 +116,7 @@ class MockMod(loader.Module):
 
     @loader.unrestricted
     async def vaporcmd(self, message):
-        """Use in reply to another message or as .vapor <text>"""
+        """Используется в ответ на другое сообщение или как .vapor <текст>"""
         text = utils.get_args_raw(message.message)
         if not text:
             if message.is_reply:
@@ -137,7 +137,7 @@ class MockMod(loader.Module):
 
     @loader.unrestricted
     async def shoutcmd(self, message):
-        """.shout <text> makes the text massive"""
+        """.shout <текст> делает текст массивным"""
         text = utils.get_args_raw(message)
         if not text:
             if message.is_reply:

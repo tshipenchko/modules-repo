@@ -23,23 +23,23 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class NotesMod(loader.Module):
-    """Stores global notes (aka snips)"""
+    """Хранит глобальные заметки (или же отрывки)"""
     strings = {"name": "Notes",
-               "what_note": "<b>What note should be retrieved?</b>",
-               "no_note": "<b>Note not found</b>",
-               "save_what": "<b>You must reply to a message to save it to a note, or type the note.</b>",
-               "what_name": "<b>You must specify what the note should be called?</b>",
-               "saved": "<b>Note saved</b>",
-               "notes_header": "<b>Saved notes:</b>\n\n",
-               "notes_item": "<b>•</b> <code>{}</code>",
-               "delnote_args": "<b>What note should be deleted?</b>",
-               "delnote_done": "<b>Note deleted</b>",
-               "delnotes_none": "<b>There are no notes to be cleared</b>",
-               "delnotes_done": "<b>All notes cleared</b>",
-               "notes_none": "<b>There are no saved notes</b>"}
+               "what_note": "<b>Какую заметку хотите получить?</b>",
+               "no_note": "<b>Заметка не найдена</b>",
+               "save_what": "<b>Вы должны ответить на сообщение, чтобы сохранить его в заметки, или напишите заметку.</b>",
+               "what_name": "<b>Вы должны указать как заметка должна называться.</b>",
+               "saved": "<b>Заметка сохранена</b>",
+               "notes_header": "<b>Сохранённые заметки:</b>\n\n",
+               "notes_item": "<b>➤</b> <code>{}</code>",
+               "delnote_args": "<b>Какую заметку следует удалить?</b>",
+               "delnote_done": "<b>Заметка удалена</b>",
+               "delnotes_none": "<b>Нет заметок для очистки</b>",
+               "delnotes_done": "<b>Все заметки очищены</b>",
+               "notes_none": "<b>Сохраненные заметки отсутствуют</b>"}
 
     async def notecmd(self, message):
-        """Gets the note specified"""
+        """Получает указанную заметку"""
         args = utils.get_args(message)
         if not args:
             await utils.answer(message, self.strings("what_note", message))
@@ -58,7 +58,7 @@ class NotesMod(loader.Module):
         await utils.answer(message, await self._db.fetch_asset(asset_id))
 
     async def delallnotescmd(self, message):
-        """Deletes all the saved notes"""
+        """Удаляет все сохраненные заметки"""
         if not self._db.get(__name__, "notes", {}):
             await utils.answer(message, self.strings("delnotes_none", message))
             return
@@ -66,7 +66,7 @@ class NotesMod(loader.Module):
         await utils.answer(message, self.strings("delnotes_done", message))
 
     async def savecmd(self, message):
-        """Save a new note. Must be used in reply with one parameter (note name)"""
+        """Сохранить новую заметку. Должен использоваться в ответе с одним параметром (именем заметки)"""
         args = utils.get_args(message)
         if not args:
             await utils.answer(message, self.strings("what_name", message))
@@ -87,7 +87,7 @@ class NotesMod(loader.Module):
         await utils.answer(message, self.strings("saved", message))
 
     async def delnotecmd(self, message):
-        """Deletes a note, specified by note name"""
+        """Удаляет заметку, указанную по соответствующему имени"""
         args = utils.get_args(message)
         if not args:
             await utils.answer(message, self.strings("delnote_args", message))
@@ -104,7 +104,7 @@ class NotesMod(loader.Module):
             self._db.set(__name__, "notes", old)
 
     async def notescmd(self, message):
-        """List the saved notes"""
+        """Список сохраненных заметок"""
         if not self._db.get(__name__, "notes", {}):
             await utils.answer(message, self.strings("notes_none", message))
             return

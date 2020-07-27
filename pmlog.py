@@ -26,18 +26,18 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class PMLogMod(loader.Module):
-    """Logs unwanted PMs to a channel"""
+    """Записывает нежелательные личные сообщения в канал"""
     strings = {"name": "PM Logger",
-               "start": "<b>Your conversation is now being logged</b>",
-               "not_pm": "<b>You can't log a group</b>",
-               "stopped": "<b>Your conversation is no longer being logged</b>",
-               "log_group_cfg_doc": "Group or channel ID where to send the logged PMs"}
+               "start": "<b>Ваш разговор сейчас записывается</b>",
+               "not_pm": "<b>Вы не можете записать разговор группы</b>",
+               "stopped": "<b>Ваш разговор больше не записывается</b>",
+               "log_group_cfg_doc": "ID группы или канала, куда отправлять зарегистрированные сообщения"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("LOG_GROUP", None, lambda m: self.strings("log_group_cfg_doc", m))
 
     async def logpmcmd(self, message):
-        """Begins logging PMs"""
+        """Начинает запись разговора"""
         if not message.is_private or message.to_id.user_id == (await message.client.get_me(True)).user_id:
             await utils.answer(message, self.strings("not_pm", message))
             return
@@ -47,7 +47,7 @@ class PMLogMod(loader.Module):
         await message.client.delete_messages(message.to_id, msgs)
 
     async def unlogpmcmd(self, message):
-        """Stops logging PMs"""
+        """Заканчивает запись разговора"""
         if not message.is_private or message.to_id.user_id == (await message.client.get_me(True)).user_id:
             await utils.answer(message, self.strings("not_pm", message))
             return

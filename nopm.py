@@ -25,30 +25,30 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class AntiPMMod(loader.Module):
-    """Prevents people sending you unsolicited private messages"""
-    strings = {"name": "Anti PM",
-               "limit_cfg_doc": "Max number of PMs before user is blocked, or None",
-               "who_to_block": "<b>Specify whom to block</b>",
-               "blocked": ("<b>I don't want any PM from</b> <a href='tg://user?id={}'>you</a>, "
-                           "<b>so you have been blocked!</b>"),
-               "who_to_unblock": "<b>Specify whom to unblock</b>",
-               "unblocked": ("<b>Alright fine! I'll forgive them this time. PM has been unblocked for </b> "
-                             "<a href='tg://user?id={}'>this user</a>"),
-               "who_to_allow": "<b>Who shall I allow to PM?</b>",
-               "allowed": "<b>I have allowed</b> <a href='tg://user?id={}'>you</a> <b>to PM now</b>",
-               "who_to_report": "<b>Who shall I report?</b>",
-               "reported": "<b>You just got reported spam!</b>",
-               "who_to_deny": "<b>Who shall I deny to PM?</b>",
-               "denied": ("<b>I have denied</b> <a href='tg://user?id={}'>you</a> "
-                          "<b>of your PM permissions.</b>"),
-               "notif_off": "<b>Notifications from denied PMs are silenced.</b>",
-               "notif_on": "<b>Notifications from denied PMs are now activated.</b>",
-               "go_away": ("Hey there! Unfortunately, I don't accept private messages from "
-                            "strangers.\n\nPlease contact me in a group, or <b>wait</b> "
-                            "for me to approve you."),
-               "triggered": ("Hey! I don't appreciate you barging into my PM like this! "
-                             "Did you even ask me for approving you to PM? No? Goodbye then."
-                             "\n\nPS: you've been reported as spam already.")}
+    """Запрещает людям отправлять вам нежелательные личные сообщения."""
+    strings = {"name": "Anti-PM'",
+               "limit_cfg_doc": "Максимальное количество личных сообщений перед блокировкой пользователя, или же ни одного",
+               "who_to_block": "<b>Укажите, кого заблокировать</b>",
+               "blocked": ("<b>Я не хочу никаких личных сообщений от</b> <a href='tg://user?id={}'>тебя</a>, "
+                           "<b>поэтому вы заблокированы!</b>"),
+               "who_to_unblock": "<b>Укажите, кого разблокировать</b>",
+               "unblocked": ("<b>Ну хорошо! Я прощу его на этот раз. Личные сообщения были разблокированы для </b> "
+                             "<a href='tg://user?id={}'>этого пользователя</a>"),
+               "who_to_allow": "<b>Кого мне разрешить в личную переписку?</b>",
+               "allowed": "<b>Я позволил</b> <a href='tg://user?id={}'>тебе</a> <b>писать мне в личные сообщения сейчас.</b>",
+               "who_to_report": "<b>На кого надо жаловаться?</b>",
+               "reported": "<b>Вы только что пожаловались о спаме!</b>",
+               "who_to_deny": "<b>Кому мне запретить в личные сообщения?</b>",
+               "denied": ("<b>Я отказался от личных сообщений от</b> <a href='tg://user?id={}'>тебя</a> "
+                          "<b>.</b>"),
+               "notif_off": "<b>Уведомления от отклоненных личных сообщений заглушены.</b>",
+               "notif_on": "<b>Уведомления от отклоненных личных сообщений активированы.</b>",
+               "go_away": ("Приветствую! К сожалению, я не принимаю личные сообщения от "
+                            "незнакомцев.\n\nПожалуйста, свяжитесь со мной в группе, или <b>подождите</b> "
+                            ", пока я вас одобрю"),
+               "triggered": ("Привет! Я не ценю то, что ты врываешься в личную переписку со мной как сейчас! "
+                             "Вы просили меня одобрить вас в личные сообщения? Нет? Тогда пока."
+                             "\n\nPS: Жалоба на спам уже отправлена.")}
 
     def __init__(self):
         self.config = loader.ModuleConfig("PM_BLOCK_LIMIT", None, lambda m: self.strings("limit_cfg_doc", m))
@@ -61,7 +61,7 @@ class AntiPMMod(loader.Module):
         self._me = await client.get_me(True)
 
     async def blockcmd(self, message):
-        """Block this user to PM without being warned"""
+        """Заблокировать этого пользователя в личных сообщениях без предупреждения."""
         user = await utils.get_target(message)
         if not user:
             await utils.answer(message, self.strings("who_to_block", message))
@@ -70,7 +70,7 @@ class AntiPMMod(loader.Module):
         await utils.answer(message, self.strings("blocked", message).format(user))
 
     async def unblockcmd(self, message):
-        """Unblock this user to PM"""
+        """Разблокировать этого пользователя в личных сообщениях."""
         user = await utils.get_target(message)
         if not user:
             await utils.answer(message, self.strings("who_to_unblock", message))
@@ -79,7 +79,7 @@ class AntiPMMod(loader.Module):
         await utils.answer(message, self.strings("unblocked", message).format(user))
 
     async def allowcmd(self, message):
-        """Allow this user to PM"""
+        """Разрешить этому пользователю писать Вам в личные сообщения."""
         user = await utils.get_target(message)
         if not user:
             await utils.answer(message, self.strings("who_to_allow", message))
@@ -88,7 +88,7 @@ class AntiPMMod(loader.Module):
         await utils.answer(message, self.strings("allowed", message).format(user))
 
     async def reportcmd(self, message):
-        """Report the user spam. Use only in PM"""
+        """Сообщить о спаме пользователя. Используйте только в личных сообщениях."""
         user = await utils.get_target(message)
         if not user:
             await utils.answer(message, self.strings("who_to_report", message))
@@ -104,7 +104,7 @@ class AntiPMMod(loader.Module):
         await utils.answer(message, self.strings("reported", message))
 
     async def denycmd(self, message):
-        """Deny this user to PM without being warned"""
+        """Запретить этого пользователя в личных сообщениях без предупреждения."""
         user = await utils.get_target(message)
         if not user:
             await utils.answer(message, self.strings("who_to_deny", message))
@@ -113,12 +113,12 @@ class AntiPMMod(loader.Module):
         await utils.answer(message, self.strings("denied", message).format(user))
 
     async def notifoffcmd(self, message):
-        """Disable the notifications from denied PMs"""
+        """Отключить уведомления от запрещенных личных сообщений."""
         self._db.set(__name__, "notif", True)
         await utils.answer(message, self.strings("notif_off", message))
 
     async def notifoncmd(self, message):
-        """Enable the notifications from denied PMs"""
+        """Включить уведомления от запрещенных личных сообщений."""
         self._db.set(__name__, "notif", False)
         await utils.answer(message, self.strings("notif_on", message))
 

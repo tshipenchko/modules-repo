@@ -26,26 +26,26 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class TerminalMod(loader.Module):
-    """Runs commands"""
+    """Запускает команды в терминале"""
 
     strings = {"name": "Terminal",
-               "flood_wait_protect_cfg_doc": "How long to wait in seconds between edits in commands",
-               "what_to_kill": "<b>Reply to a terminal command to terminate it</b>",
-               "kill_fail": "<b>Could not kill process</b>",
-               "killed": "<b>Killed</b>",
-               "no_cmd": "<b>No command is running in that message</b>",
-               "running": "<b>Running command</b> <code>{}</code>",
-               "finished": "\n<b>Command finished with return code</b> <code>{}</code>",
-               "stdout": "\n<b>Stdout:</b>\n<code>",
-               "stderr": "</code>\n\n<b>Stderr:</b>\n<code>",
+               "flood_wait_protect_cfg_doc": "Как долго ждать в секундах между изменениями в командах",
+               "what_to_kill": "<b>Ответьте на команду терминала, чтобы завершить её</b>",
+               "kill_fail": "<b>Не удалось убить процесс</b>",
+               "killed": "<b>Процесс убит</b>",
+               "no_cmd": "<b>В этом сообщении нет команды</b>",
+               "running": "<b>Запуск команды</b> <code>{}</code>",
+               "finished": "\n<b>Команда завершилась с кодом </b> <code>{}</code>",
+               "stdout": "\n<b>Вывод:</b>\n<code>",
+               "stderr": "</code>\n\n<b>Ошибки:</b>\n<code>",
                "end": "</code>",
-               "auth_fail": "<b>Authentication failed, please try again</b>",
-               "auth_needed": "<a href=\"tg://user?id={}\">Interactive authentication required</a>",
-               "auth_msg": ("<b>Please edit this message to the password for</b> "
-                            "<code>{}</code> <b>to run</b> <code>{}</code>"),
-               "auth_locked": "<b>Authentication failed, please try again later</b>",
-               "auth_ongoing": "<b>Authenticating...</b>",
-               "done": "<b>Done</b>"}
+               "auth_fail": "<b>Ошибка авторизации, пожалуйста попробуйте снова</b>",
+               "auth_needed": "<a href=\"tg://user?id={}\">Требуется интерактивная аутентификация</a>",
+               "auth_msg": ("<b>Пожалуйста, измените это сообщение на пароль</b> "
+                            "<code>{}</code> <b>для запуска</b> <code>{}</code>"),
+               "auth_locked": "<b>Ошибка аутентификации, пожалуйста повторите попытку позже</b>",
+               "auth_ongoing": "<b>Аутентификация...</b>",
+               "done": "<b>Готово</b>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("FLOOD_WAIT_PROTECT", 2,
@@ -54,12 +54,12 @@ class TerminalMod(loader.Module):
 
     @loader.owner
     async def terminalcmd(self, message):
-        """.terminal <command>"""
+        """.terminal <команда>"""
         await self.run_command(message, utils.get_args_raw(message))
 
     @loader.owner
     async def aptcmd(self, message):
-        """Shorthand for '.terminal apt'"""
+        """Быстрый доступ к .terminal apt"""
         await self.run_command(message, ("apt " if os.geteuid() == 0 else "sudo -S apt ")
                                + utils.get_args_raw(message) + " -y",
                                RawMessageEditor(message, "apt " + utils.get_args_raw(message),
@@ -90,7 +90,7 @@ class TerminalMod(loader.Module):
 
     @loader.owner
     async def terminatecmd(self, message):
-        """Use in reply to send SIGTERM to a process"""
+        """Используйте в ответ, чтобы отправить SIGTERM процессу"""
         if not message.is_reply:
             await utils.answer(message, self.strings("what_to_kill", message))
             return
@@ -107,7 +107,7 @@ class TerminalMod(loader.Module):
 
     @loader.owner
     async def killcmd(self, message):
-        """Use in reply to send SIGKILL to a process"""
+        """Используйте в ответ, чтобы отправить SIGKILL процессу"""
         if not message.is_reply:
             await utils.answer(message, self.strings("what_to_kill", message))
             return
@@ -123,18 +123,18 @@ class TerminalMod(loader.Module):
             await utils.answer(message, self.strings("no_cmd", message))
 
     async def neofetchcmd(self, message):
-        """Show system stats via neofetch"""
+        """Отображает системную информацию через neofetch"""
         await self.run_command(message, 'if [ ! x"" = x"$DYNO" ]; then neofetch --config none --stdout; else neofetch --stdout; fi', RawMessageEditor(message, 'if [ ! x"" = x"$DYNO" ]; then neofetch --config none --stdout; else neofetch --stdout; fi',
                                                                               self.config, self.strings, message))
 
     async def uptimecmd(self, message):
-        """Show system uptime"""
+        """Показать время работы системы"""
         await self.run_command(message, "uptime", RawMessageEditor(message, "uptime", self.config,
                                                                    self.strings, message))
 
     @loader.owner
     async def memtopcmd(self, message):
-        """Показывает топ 5 самых прожорливых процессов по RAM"""
+        """Показывает топ 5 самых прожорливых процессов по RAM. Полезно для пользователей с удалённым сервером"""
         await self.run_command(message, """ps -eo size,pid,user,command | awk '{ hr=$1/1024 ; printf("%13.6f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort -r | head -n 5""", RawMessageEditor(message, """ps -eo size,pid,user,command | awk '{ hr=$1/1024 ; printf("%13.6f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | sort -r | head -n 5""", self.config,
                                                        	self.strings, message))
 

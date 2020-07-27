@@ -26,13 +26,13 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class TranslateMod(loader.Module):
-    """Translator"""
-    strings = {"name": "Translator",
-               "translated": "<b>From: </b><code>{from_lang}</code>"
-               "\n<b>To: </b><code>{to_lang}</code>\n\n{output}",
-               "invalid_text": "Invalid text to translate",
-               "doc_default_lang": "Language to translate to by default",
-               "doc_api_key": "API key from https://translate.yandex.com/developers/keys"}
+    """Переводчик"""
+    strings = {"name": "Translate",
+               "translated": "<b>C: </b><code>{from_lang}</code>"
+               "\n<b>На: </b><code>{to_lang}</code>\n\n{output}",
+               "invalid_text": "Неверный текст для перевода",
+               "doc_default_lang": "Язык для перевода по умолчанию",
+               "doc_api_key": "Ключ API на https://translate.yandex.com/developers/keys"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("DEFAULT_LANG", "en", lambda m: self.strings("doc_default_lang", m),
@@ -44,7 +44,7 @@ class TranslateMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def translatecmd(self, message):
-        """.translate [from_lang->][->to_lang] <text>"""
+        """.translate [с N1 языка->][->на N2 язык] <текст>"""
         args = utils.get_args(message)
 
         if len(args) == 0 or "->" not in args[0]:

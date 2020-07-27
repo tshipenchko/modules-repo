@@ -24,14 +24,14 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class QuickTypeMod(loader.Module):
-    """Deletes your message after a timeout"""
-    strings = {"name": "Quick Typer",
-               "need_something": "U wot? I need something to type",
-               "lazy_af": "Go type it urself m8",
-               "nice_number": "Nice number bro"}
+    """Удаляет ваше сообщение после тайм-аута"""
+    strings = {"name": "QuickTyper",
+               "need_something": "Ты.. что? Мне нужно что-то напечатать",
+               "lazy_af": "Так мало.. лучше сам набери епт",
+               "nice_number": "Хороший номер братан"}
 
     async def quicktypecmd(self, message):
-        """.quicktype <timeout> <message>"""
+        """.quicktype <тайм-аут> <сообщение>"""
         args = utils.get_args(message)
         logger.debug(args)
         if len(args) == 0:

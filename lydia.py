@@ -32,23 +32,23 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class LydiaMod(loader.Module):
-    """Talks to a robot instead of a human"""
+    """Беседа с роботом вместо человека."""
     strings = {"name": "Lydia anti-PM",
-               "enable_disable_error_group": "<b>The AI service cannot be"
-               " enabled or disabled in this chat. Is this a group chat?</b>",
-               "enable_error_user": "<b>The AI service cannot be"
-               " enabled for this user. Perhaps it wasn't disabled?</b>",
-               "successfully_enabled": "<b>AI enabled for this user. </b>",
-               "successfully_enabled_for_chat": "<b>AI enabled for that user in this chat.</b>",
-               "cannot_find": "<b>Cannot find that user.</b>",
-               "successfully_disabled": "<b>AI disabled for this user.</b>",
-               "cleanup_ids": "<b>Successfully cleaned up lydia-disabled IDs</b>",
-               "cleanup_sessions": "<b>Successfully cleaned up lydia sessions.</b>",
-               "doc_client_key": "The API key for lydia, acquire from"
+               "enable_disable_error_group": "<b>Служба ИИ не может быть"
+               " включена или отключена в этом чате. Может быть это не групповой чат?</b>",
+               "enable_error_user": "<b>Служба ИИ не может быть"
+               " включена для этого пользователя. Возможно она ещё не была для него отключена?</b>",
+               "successfully_enabled": "<b>ИИ включен для этого пользователя. </b>",
+               "successfully_enabled_for_chat": "<b>ИИ включен для этого пользователя в этом чате.</b>",
+               "cannot_find": "<b>Не могу найти этого пользователя.</b>",
+               "successfully_disabled": "<b>ИИ отключен для этого пользователя.</b>",
+               "cleanup_ids": "<b>Успешно убраны идентификаторы с отключенной Лидией</b>",
+               "cleanup_sessions": "<b>Успешно очищены сессии Лидии.</b>",
+               "doc_client_key": "Ключ API для Лидии нужно получить на сайте"
                " https://coffeehouse.intellivoid.net",
-               "doc_ignore_no_common": "Boolean to ignore users who have no chats in common with you",
-               "doc_disabled": "Whether Lydia defaults to enabled"
-                               " in private chats (if True, you'll have to use forcelydia"}
+               "doc_ignore_no_common": "Игнорирование пользователей, не имеющих общих чатов с вами.",
+               "doc_disabled": "По умолчанию Лидия включена"
+                               " в приватных чатах (если True, вам придется использовать .forcelydia"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("CLIENT_KEY", None, lambda m: self.strings("doc_client_key", m),
@@ -65,7 +65,7 @@ class LydiaMod(loader.Module):
         self._cleanup = asyncio.ensure_future(self.schedule_cleanups())
 
     async def schedule_cleanups(self):
-        """Cleans up dead sessions and reschedules itself to run when the next session expiry takes place"""
+        """Удаляет мертвые сессии и перепланирует себя для запуска после истечения следующего сеанса."""
         sessions = self._db.get(__name__, "sessions", {})
         if len(sessions) == 0:
             return
@@ -94,7 +94,7 @@ class LydiaMod(loader.Module):
         await self.schedule_cleanups()
 
     async def enlydiacmd(self, message):
-        """Enables Lydia for target user"""
+        """Включает Лидию для конкретного пользователя."""
         old = self._db.get(__name__, "allow", [])
         if message.is_reply:
             user = (await message.get_reply_message()).from_id
@@ -112,7 +112,7 @@ class LydiaMod(loader.Module):
         await utils.answer(message, self.strings("successfully_enabled", message))
 
     async def forcelydiacmd(self, message):
-        """Enables Lydia for user in specific chat"""
+        """Включает Лидию для пользователя в конкретном чате."""
         if message.is_reply:
             user = (await message.get_reply_message()).from_id
         else:
@@ -124,7 +124,7 @@ class LydiaMod(loader.Module):
         await utils.answer(message, self.strings("successfully_enabled_for_chat", message))
 
     async def dislydiacmd(self, message):
-        """Disables Lydia for the target user"""
+        """Отключает Лидию для конкретного пользователя."""
         if message.is_reply:
             user = (await message.get_reply_message()).from_id
         else:
@@ -143,12 +143,12 @@ class LydiaMod(loader.Module):
         await utils.answer(message, self.strings("successfully_disabled", message))
 
     async def cleanlydiadisabledcmd(self, message):
-        """ Remove all lydia-disabled users from DB. """
+        """ Удаление всех пользователей с ограниченными возможностями из базы данных. """
         self._db.set(__name__, "allow", [])
         return await utils.answer(message, self.strings("cleanup_ids", message))
 
     async def cleanlydiasessionscmd(self, message):
-        """Remove all active and not active lydia sessions from DB"""
+        """Удаление всех активных и не активных сеансов Лидии из базы данных."""
         self._db.set(__name__, "sessions", {})
         return await utils.answer(message, self.strings("cleanup_sessions", message))
 

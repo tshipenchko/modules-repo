@@ -26,12 +26,12 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class LyricsMod(loader.Module):
-    """Sings songs"""
+    """Ищет тексты песен"""
     strings = {"name": "Lyrics",
-               "genius_api_token_doc": "The LyricsGenius API token from http://genius.com/api-clients",
-               "invalid_syntax": "<b>Please specify song and artist.</b>",
-               "song_not_found": "<b>Song not found</b>",
-               "missing_token": "<b>API Token missing</b>"}
+               "genius_api_token_doc": "Токен API LyricsGenius на http://genius.com/api-clients",
+               "invalid_syntax": "<b>Пожалуйста, укажите песню и исполнителя.</b>",
+               "song_not_found": "<b>Песня не найдена</b>",
+               "missing_token": "<b>Отсутствует токен API</b>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("GENIUS_API_TOKEN", None, lambda m: self.strings("genius_api_token_doc", m))
@@ -45,7 +45,7 @@ class LyricsMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def lyricscmd(self, message):
-        """.lyrics Song, Artist"""
+        """.lyrics Песня, Исполнитель"""
         if self.genius is None:
             await utils.answer(message, self.strings("missing_token", message))
         args = utils.get_args_split_by(message, ",")

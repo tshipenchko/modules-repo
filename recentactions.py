@@ -21,17 +21,17 @@ from .. import loader, utils
 
 @loader.tds
 class RecentActionsMod(loader.Module):
-    """Reads recent actions"""
+    """Показывает недавние действия в чате"""
     strings = {"name": "Recent Actions",
-               "reply_start": "<b>Reply to a message to specify where to start</b>",
-               "invalid_chat": "<b>This isn't a supergroup or channel</b>",
-               "needs_admin": "<b>Admin rights are required to read deleted messages</b>",
-               "recovered": "Deleted message {} recovered. Originally sent at {} by {}, deleted at {} by {}"}
+               "reply_start": "<b>Ответьте на сообщение, чтобы указать, с чего начать</b>",
+               "invalid_chat": "<b>Это не супергруппа или канал</b>",
+               "needs_admin": "<b>Необходимы права администратора для чтения удаленных сообщений</b>",
+               "recovered": "Удаленное сообщение {} восстановлено. Первоначально отправлено в {} пользователем {}, удалено в {} пользователем {}"}
 
     @loader.group_admin
     @loader.ratelimit
     async def recoverdeletedcmd(self, message):
-        """Restores deleted messages sent after replied message (optionally specify how many to recover)"""
+        """Восстанавливает удаленные сообщения, отправленные после сообщения, на которое вы ответили (при желании укажите, сколько нужно восстановить)"""
         msgs = message.client.iter_admin_log(message.to_id, delete=True)
         if not message.is_reply:
             await utils.answer(message, self.strings("reply_start", message))

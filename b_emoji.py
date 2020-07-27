@@ -23,17 +23,17 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class BEmojiMod(loader.Module):
-    """🅱️-ifies things"""
-    strings = {"name": "🅱️",
-               "replacable_chars_cfg_doc": "Characters that can be replaced with 🅱️",
-               "no_text": "<b>There's nothing to 🅱️-ify</b>"}
+    """Бификация"""
+    strings = {"name": "🅱️фикация",
+               "replacable_chars_cfg_doc": "Символы, которые можно заменить на 🅱️",
+               "no_text": "<b>Тут нечего 🅱️ифицировать</b>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig("REPLACABLE_CHARS", "bdfgpv", "Characters that can be replaced with 🅱️")
 
     @loader.unrestricted
     async def bcmd(self, message):
-        """Use in reply to another message or as .b <text>"""
+        """Использовать в ответ на другое сообщение или как .b <текст>"""
         if message.is_reply:
             text = (await message.get_reply_message()).message
         else:

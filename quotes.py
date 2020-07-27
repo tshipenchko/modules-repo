@@ -31,26 +31,26 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class QuotesMod(loader.Module):
-    """Quote a message."""
+    """Цитировать сообщение."""
     strings = {
         "name": "Quotes",
-        "api_token_cfg_doc": "API Key/Token for Quotes.",
-        "api_url_cfg_doc": "API URL for Quotes.",
-        "username_colors_cfg_doc": "Username colors",
-        "default_username_color_cfg_doc": "Default color for the username.",
-        "no_reply": "<b>You didn't reply to a message.</b>",
-        "no_template": "<b>You didn't specify the template.</b>",
+        "api_token_cfg_doc": "Ключ API/Токен для Цитат.",
+        "api_url_cfg_doc": "API URL для Цитат.",
+        "username_colors_cfg_doc": "Цвета имени пользователя",
+        "default_username_color_cfg_doc": "Цвет по умолчанию для имени пользователя.",
+        "no_reply": "<b>Вы не ответили на сообщение.</b>",
+        "no_template": "<b>Вы не указали шаблон.</b>",
         "delimiter": "</code>, <code>",
-        "server_error": "<b>Server error. Please report to developer.</b>",
-        "invalid_token": "<b>You've set an invalid token.</b>",
-        "unauthorized": "<b>You're unauthorized to do this.</b>",
-        "not_enough_permissions": "<b>Wrong template. You can use only the default one.</b>",
-        "templates": "<b>Available Templates:</b> <code>{}</code>",
-        "cannot_send_stickers": "<b>You cannot send stickers in this chat.</b>",
-        "admin": "admin",
-        "creator": "creator",
-        "hidden": "hidden",
-        "channel": "Channel",
+        "server_error": "<b>Ошибка сервера. Пожалуйста, сообщите разработчику.</b>",
+        "invalid_token": "<b>Вы установили неверный токен.</b>",
+        "unauthorized": "<b>Вы не авторизованы, чтобы сделать это.</b>",
+        "not_enough_permissions": "<b>Неправильный шаблон. Вы можете использовать только один по умолчанию.</b>",
+        "templates": "<b>Доступные шаблоны:</b> <code>{}</code>",
+        "cannot_send_stickers": "<b>Вы не можете отправлять стикеры в этом чате.</b>",
+        "admin": "Админ",
+        "creator": "Владелец",
+        "hidden": "Скрытая должность",
+        "channel": "Канал",
         "filename": "file.png"
     }
 
@@ -70,10 +70,10 @@ class QuotesMod(loader.Module):
     @loader.unrestricted
     @loader.ratelimit
     async def quotecmd(self, message):  # noqa: C901
-        """Quote a message.
-        Usage: .quote [template] [file/force_file]
-        If template is missing, possible templates are fetched.
-        If no args provided, default template will be used, quote sent as sticker"""
+        """Цитировать сообщение.
+        Использование: .quote [шаблон] [файл]
+        Если шаблон отсутствует, выбираются возможные шаблоны.
+        Если аргументы не предоставлены, будет использован шаблон по умолчанию, а цитата отправлена в виде стикера."""
         args = utils.get_args(message)
         reply = await message.get_reply_message()
 

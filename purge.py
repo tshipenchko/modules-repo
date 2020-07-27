@@ -26,13 +26,13 @@ class PurgeMod(loader.Module):
     """Удаляет ваши сообщения"""
     strings = {"name": "Purge",
                "from_where": "<b>Какие сообщения должны быть удалены?</b>",
-               "not_supergroup_bot": "<b>Удаления сообщений может проходить только в супергруппах.</b>",
+               "not_supergroup_bot": "<b>Чистку можно проводить только в супергруппах.</b>",
                "delete_what": "<b>Какое сообщение должно быть удалено?</b>"}
 
     @loader.group_admin_delete_messages
     @loader.ratelimit
     async def purgecmd(self, message):
-        """Очистить начиная с ответного cообщения"""
+        """Чистит сообщения, начиная с сообщения, на которое вы ответили"""
         if not message.is_reply:
             await utils.answer(message, self.strings("from_where", message))
             return
@@ -80,7 +80,7 @@ class PurgeMod(loader.Module):
     @loader.group_admin_delete_messages
     @loader.ratelimit
     async def delcmd(self, message):
-        """Удалить сообщения на которое вы ответили"""
+        """Удаляет сообщение, на которое вы ответили"""
         msgs = [message.id]
         if not message.is_reply:
             if await message.client.is_bot():

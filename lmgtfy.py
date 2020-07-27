@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class LMGTFYMod(loader.Module):
-    """Let me Google that for you, coz you too lazy to do that yourself."""
-    strings = {"name": "LetMeGoogleThatForYou",
-               "result": "<b>Here you go, help yourself.</b>\n<a href='{}'>{}</a>",
-               "default": "How to use Google?"}
+    """Использует Google за того, кто слишком ленивый, чтобы сделать это самостоятельно."""
+    strings = {"name": "LMGTFY",
+               "result": "<b>А ведь сложно же самому поискать, да? Держи:</b>\n<a href='{}'>{}</a>",
+               "default": "Как пользоваться поисковой системой Google?"}
 
     @loader.unrestricted
     async def lmgtfycmd(self, message):
-        """Use in reply to another message or as .lmgtfy <text>"""
+        """Использовать в ответ на другое сообщение или как .lmgtfy <текст>."""
         text = utils.get_args_raw(message)
         if not text:
             if message.is_reply:

@@ -29,22 +29,22 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class InfoMod(loader.Module):
-    """Provides system information about the computer hosting this bot"""
-    strings = {"name": "System Info",
-               "info_title": "<b>System Info</b>",
-               "kernel": "<b>Kernel:</b> <code>{}</code>",
-               "arch": "<b>Arch:</b> <code>{}</code>",
-               "os": "<b>OS:</b> <code>{}</code>",
-               "distro": "<b>Linux Distribution:</b> <code>{}</code>",
+    """Предоставляет системную информацию о компьютере, на котором размещен этот бот"""
+    strings = {"name": "Info",
+               "info_title": "<b>Информация о системе</b>",
+               "kernel": "<b>Ядро:</b> <code>{}</code>",
+               "arch": "<b>Архитектура:</b> <code>{}</code>",
+               "os": "<b>Операционная система:</b> <code>{}</code>",
+               "distro": "<b>Дистрибутив Linux:</b> <code>{}</code>",
                "android_sdk": "<b>Android SDK:</b> <code>{}</code>",
-               "android_ver": "<b>Android Version:</b> <code>{}</code>",
-               "android_patch": "<b>Android Security Patch:</b> <code>{}</code>",
-               "unknown_distro": "<b>Could not determine Linux distribution.</b>",
-               "python_version": "<b>Python version:</b> <code>{}</code>",
-               "telethon_version": "<b>Telethon version:</b> <code>{}</code>"}
+               "android_ver": "<b>Версия Android:</b> <code>{}</code>",
+               "android_patch": "<b>Патч безопасности Android:</b> <code>{}</code>",
+               "unknown_distro": "<b>Не могу определить дистрибутив Linux.</b>",
+               "python_version": "<b>Версия Python:</b> <code>{}</code>",
+               "telethon_version": "<b>Версия Telethon:</b> <code>{}</code>"}
 
     async def infocmd(self, message):
-        """Shows system information"""
+        """Показывает системную информацию"""
         reply = self.strings("info_title", message)
         reply += "\n" + self.strings("kernel", message).format(utils.escape_html(platform.release()))
         reply += "\n" + self.strings("arch", message).format(utils.escape_html(platform.architecture()[0]))

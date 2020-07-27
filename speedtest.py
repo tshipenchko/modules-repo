@@ -28,14 +28,14 @@ logger = logging.getLogger(__name__)
 class SpeedtestMod(loader.Module):
     """Использует speedtest.net"""
     strings = {"name": "Speedtest",
-               "running": "<b>Измеряю скорость интернета.</b>",
-               "results": "<b>Ваша скорость:</b>",
-               "results_download": "<b>Скачивание:</b> <code>{}</code> <b>Мбайт/с</b>",
-               "results_upload": "<b>Выгрузка:</b> <code>{}</code> <b>Мбайт/с</b>",
-               "results_ping": "<b>Пинг:</b> <code>{}</code> <b>ms</b>"}
+               "running": "<b>Запуск теста скорости...</b>",
+               "results": "<b>Результаты теста скорости:</b>",
+               "results_download": "<b>Скачивание:</b> <code>{}</code> <b>Мбит/c</b>",
+               "results_upload": "<b>Выгрузка:</b> <code>{}</code> <b>Мбит/c</b>",
+               "results_ping": "<b>Пинг:</b> <code>{}</code> <b>мс</b>"}
 
     async def speedtestcmd(self, message):
-        """Тестирует скорость интернета"""
+        """Проверяет вашу скорость интернета"""
         await utils.answer(message, self.strings("running", message))
         args = utils.get_args(message)
         servers = []

@@ -27,12 +27,12 @@ logger = logging.getLogger(__name__)
 
 @loader.tds
 class AFKMod(loader.Module):
-    """Отправляет сообщение, если вы недоступны"""
+    """Предоставляет сообщение о том, что вы сейчас недоступны"""
     strings = {"name": "AFK",
-               "gone": "<b>Я ушел в АФК</b>",
-               "back": "<b>Я вернулся</b>",
-               "afk": "<b>Я сейчас не в сети (уже {}).</b>",
-               "afk_reason": "<b>Я сейчас не в сети (уже {}).\nПо причине:</b> <i>{}</i>"}
+               "gone": "<b>Я теперь в AFK.</b>",
+               "back": "<b>Я больше не в AFK.</b>",
+               "afk": "<b>Я сейчас в AFK (уже {}).</b>",
+               "afk_reason": "<b>Я сейчас в AFK (уже {}).\nПричина:</b> <i>{}</i>"}
 
     async def client_ready(self, client, db):
         self._db = db
@@ -50,7 +50,7 @@ class AFKMod(loader.Module):
         await utils.answer(message, self.strings("gone", message))
 
     async def unafkcmd(self, message):
-        """Убрать статус АФК"""
+        """Удалить статус AFK"""
         self._db.set(__name__, "afk", False)
         self._db.set(__name__, "gone", None)
         self._db.set(__name__, "ratelimit", [])
