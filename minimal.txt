@@ -1,6 +1,7 @@
 admin_tools
 afk
 info
+gitadd
 notes
 purge
 recentactions
